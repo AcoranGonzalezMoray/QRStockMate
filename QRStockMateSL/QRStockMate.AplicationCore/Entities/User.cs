@@ -14,7 +14,7 @@ namespace QRStockMate.AplicationCore.Entities
         public string Password { get; set; }
         public string Phone { get; set; }
         public string Code { get; set; }
-
+        public string Url { get; set; }
         public RoleUser Role { get; set; }
 
     }
