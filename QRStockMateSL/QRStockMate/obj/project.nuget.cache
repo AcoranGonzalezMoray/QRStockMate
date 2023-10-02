@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uhRbMsCE99TfXNFBFGy8fQ87MnUoUTIe4nreomL6nz6+qftcR7I6wDJNaEKz6SEQkQMduFXAU1VaGGtCM1XKDQ==",
+  "dgSpecHash": "h+kdzZTp2L8MVzkBWV6fiR4NSAy67nX/8kYN7PXLhoWgMU79cOC3CBsls8KoEG481/PH51H6WAEhyr2rqI+UWw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+  "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\acora\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.11\\microsoft.aspnetcore.openapi.7.0.11.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
