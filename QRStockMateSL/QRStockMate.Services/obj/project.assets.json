@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net7.0": {}
+    "net7.0": {
+      "QRStockMate.AplicationCore/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/QRStockMate.AplicationCore.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/QRStockMate.AplicationCore.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "QRStockMate.AplicationCore/1.0.0": {
+      "type": "project",
+      "path": "../QRStockMate.AplicationCore/QRStockMate.AplicationCore.csproj",
+      "msbuildProject": "../QRStockMate.AplicationCore/QRStockMate.AplicationCore.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net7.0": []
+    "net7.0": [
+      "QRStockMate.AplicationCore >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\acora\\.nuget\\packages\\": {},
@@ -38,7 +57,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+              "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -69,5 +92,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problema al leer el archivo de caché C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
