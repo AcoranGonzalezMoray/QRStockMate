@@ -10,10 +10,10 @@ namespace QRStockMate.AplicationCore.Interfaces.Service
     {
         Task<TEntity> GetById(int id);
         Task<IEnumerable<TEntity>> GetAll();
-        void Delete(TEntity entity);
-        void DeleteRange(IEnumerable<TEntity> entities);
+        Task Delete(TEntity entity);
+        Task DeleteRange(IEnumerable<TEntity> entities);
         Task Update(TEntity entity);
         Task UpdateRange(IEnumerable<TEntity> entities);
-        void Create(TEntity entity);
+        Task Create(TEntity entity);
     }
 }

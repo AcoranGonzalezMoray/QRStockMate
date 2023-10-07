@@ -25,14 +25,14 @@ namespace QRStockMate.Services
             return await _tRepository.GetAll();
         }
 
-        public async void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
-            _tRepository.Delete(entity);
+            await _tRepository.Delete(entity);
         }
 
-        public async void DeleteRange(IEnumerable<TEntity> entities)
+        public async Task DeleteRange(IEnumerable<TEntity> entities)
         {
-            _tRepository.DeleteRange(entities);
+           await _tRepository.DeleteRange(entities);
         }
 
         public async Task Update(TEntity entity)
@@ -45,9 +45,9 @@ namespace QRStockMate.Services
             await _tRepository.UpdateRange(entities); 
         }
 
-        public async void Create(TEntity entity)
+        public async Task Create(TEntity entity)
         {
-             _tRepository.Create(entity);
+            await _tRepository.Create(entity);
         }
     }
 }
