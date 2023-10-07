@@ -17,19 +17,19 @@ namespace QRStockMate.Infrastructure.Repositories
             _entities = _context.Set<User>();
         }
 
-        public Task<IEnumerable<User>> getCompany()
+        public Task<IEnumerable<User>> getCompany(string code)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); //Falta que Javi Implemente
         }
 
-        public Task<IEnumerable<User>> getEmployees()
+        public async Task<IEnumerable<User>> getEmployees(string code)
         {
-            throw new NotImplementedException();
+            return await _entities.Where(d=> d.Code == code).ToListAsync();
         }
 
         public Task<IEnumerable<User>> getWarehouses()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();//Falta que Santiago Implemente
         }
     }
 }

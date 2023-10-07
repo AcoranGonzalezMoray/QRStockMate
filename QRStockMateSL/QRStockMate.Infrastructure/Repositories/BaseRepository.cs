@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.Infrastructure.Data;
+using System.Collections.Generic;
 
 namespace QRStockMate.Infrastructure.Repositories
 {
@@ -16,20 +17,22 @@ namespace QRStockMate.Infrastructure.Repositories
             _entities = _context.Set<TEntity>();
         }
 
-        public void Create(TEntity entity)
+        public async Task Create(TEntity entity)
         {
-            throw new NotImplementedException();
+            _entities.Add(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public async  void DeleteById(TEntity entity)
+        public async  Task Delete(TEntity entity)
         {
             _entities.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public void DeleteRange(IEnumerable<TEntity> entities)
+        public async  Task DeleteRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            _entities.RemoveRange(entities);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAll()
@@ -37,19 +40,23 @@ namespace QRStockMate.Infrastructure.Repositories
             return await _entities.ToListAsync();
         }
 
-        public Task<TEntity> GetById(int id)
+        public async Task<TEntity> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await _entities.FindAsync(id);
         }
 
-        public Task Update(TEntity entity)
+        public async Task Update(TEntity entityToUpdate)
         {
-            throw new NotImplementedException();
+            _entities.Attach(entityToUpdate);
+            _context.Entry(entityToUpdate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateRange(IEnumerable<TEntity> entities)
+        public async Task UpdateRange(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            _entities.AttachRange(entities);
+            _context.Entry(entities).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }
