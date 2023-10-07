@@ -14,6 +14,11 @@ namespace QRStockMate.Services
             _userRepository = userRepository;
         }
 
+        public async Task DeleteAccount(string code)
+        {
+            await _userRepository.DeleteAccount(code);
+        }
+
         public async Task<Company> getCompany(string code)
         {
           return  await _userRepository.getCompany(code);

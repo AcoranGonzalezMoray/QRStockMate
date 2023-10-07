@@ -35,11 +35,26 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
 
+    //StorageFirebase
+builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
+builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
+
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
 
-
+//CORS
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 
 var app = builder.Build();
 

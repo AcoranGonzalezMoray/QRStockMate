@@ -14,16 +14,15 @@ namespace QRStockMate.Infrastructure.Repositories
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly DbSet<Company> _entities;
         public CompanyRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
-            _entities = _context.Set<Company>();
         }
 
         public async Task<IEnumerable<User>> getEmployees(string code)
         {
-            return (IEnumerable<User>)await _entities.Where(a => a.Code == code).ToListAsync();
+            
+            return await _context.Users.Where(a => a.Code == code).ToListAsync();
         }
 
         public Task<IEnumerable<Company>> getWarehouses(string code)

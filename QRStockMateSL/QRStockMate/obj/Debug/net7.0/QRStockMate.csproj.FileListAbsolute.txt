@@ -283,3 +283,6 @@ C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Jav
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\QRStockMate.pdb
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\QRStockMate.genruntimeconfig.cache
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\ref\QRStockMate.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\bin\Debug\net7.0\Firebase.Auth.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\bin\Debug\net7.0\Firebase.Storage.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\bin\Debug\net7.0\Newtonsoft.Json.dll
