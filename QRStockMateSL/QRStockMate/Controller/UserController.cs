@@ -130,7 +130,7 @@ namespace QRStockMate.Controller
 
         [AllowAnonymous]
         [HttpPost("Registro")]
-        public async Task<IActionResult> Registro(User user)
+        public async Task<IActionResult> Registro(UserModel user)
         {
             try
             {
@@ -139,9 +139,16 @@ namespace QRStockMate.Controller
                 if (userE != null) { return Conflict(); }//409
 
                 user.Password = Utility.Utility.EncriptarClave(user.Password);
-                user.Code = Utility.Utility.GenerateCode();
 
-                await _userService.Create(user);
+                if (user.Code.Length == 0) {
+                    user.Code = Utility.Utility.GenerateCode();
+                    user.Role = RoleUser.Director;
+
+                    //Al ser director se crea la empresa aqui
+                }
+               
+                var userEntity = _mapper.Map<UserModel,User>(user);
+                await _userService.Create(userEntity);
 
                 return CreatedAtAction("Get", new { id = user.Id }, user);
             }
@@ -152,7 +159,7 @@ namespace QRStockMate.Controller
         }
 
 
-        //Funciones Especiales
+      
         
     }
 }
