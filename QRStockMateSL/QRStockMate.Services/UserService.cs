@@ -18,15 +18,9 @@ namespace QRStockMate.Services
         {
           return  await _userRepository.getCompany(code);
         }
-
-        public async  Task<IEnumerable<User>> getEmployees(string code)
+        public async  Task<User> getUserByEmailPassword(string email, string password)
         {
-            return await _userRepository.getEmployees(code);
-        }
-
-        public async Task<IEnumerable<User>> getWarehouses()
-        {
-            return await _userRepository.getWarehouses();
+          return await _userRepository.getUserByEmailPassword(email, password);
         }
     }
 }

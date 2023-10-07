@@ -22,14 +22,9 @@ namespace QRStockMate.Infrastructure.Repositories
             throw new NotImplementedException(); //Falta que Javi Implemente
         }
 
-        public async Task<IEnumerable<User>> getEmployees(string code)
+        public async Task<User> getUserByEmailPassword(string email, string password)
         {
-            return await _entities.Where(d=> d.Code == code).ToListAsync();
-        }
-
-        public Task<IEnumerable<User>> getWarehouses()
-        {
-            throw new NotImplementedException();//Falta que Santiago Implemente
+            return await _entities.Where(d => d.Email == email && d.Password == password).FirstOrDefaultAsync();
         }
     }
 }
