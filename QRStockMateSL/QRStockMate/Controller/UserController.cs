@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using QRStockMate.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Service;
 using QRStockMate.Model;
@@ -18,6 +20,8 @@ namespace QRStockMate.Controller
             _userService = userService;
             _mapper = mapper;
         }
+
+        //FUNCIONES BASICAS
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
@@ -76,5 +80,79 @@ namespace QRStockMate.Controller
             }
         }
 
+        [HttpDelete]
+        public async Task<ActionResult<UserModel>> Delete([FromBody] UserModel model)
+        {
+            try
+            {
+                var user = _mapper.Map<UserModel, User>(model);
+
+                if (user is null) return NotFound();//404
+
+                await _userService.Delete(user);
+
+                return NoContent(); //202
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);//400
+            }
+        }
+
+
+        //FUNCIONES DE LOGIN
+        [AllowAnonymous]
+        [HttpPost("IniciarSesion")]
+        public async Task<IActionResult> IniciarSesion([FromForm] string email, [FromForm] string password)
+        {
+            try
+            {
+                var user = await _userService.getUserByEmailPassword(email, Utility.Utility.EncriptarClave(password));
+                if (user == null) { return NotFound(); }//404
+                //var token = _context_jwt.GenToken(user.Email, user.Password);
+
+
+                var response = new
+                {
+                    User = user,
+                    //Token = token
+                };
+
+
+                return Ok(response);//200
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);//400
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Registro")]
+        public async Task<IActionResult> Registro(User user)
+        {
+            try
+            {
+                var userE = await _userService.getUserByEmailPassword(user.Email, Utility.Utility.EncriptarClave(user.Password));
+
+                if (userE != null) { return Conflict(); }//409
+
+                user.Password = Utility.Utility.EncriptarClave(user.Password);
+                user.Code = Utility.Utility.GenerateCode();
+
+                await _userService.Create(user);
+
+                return CreatedAtAction("Get", new { id = user.Id }, user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        //Funciones Especiales
+        
     }
 }

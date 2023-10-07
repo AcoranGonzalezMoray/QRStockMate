@@ -21,12 +21,12 @@ namespace QRStockMate.Infrastructure.Repositories
             _entities = _context.Set<Company>();
         }
 
-        public Task<IEnumerable<Company>> getEmployees(string code)
+        public async Task<IEnumerable<User>> getEmployees(string code)
         {
-            throw new NotImplementedException();//Debo Implementar
+            return (IEnumerable<User>)await _entities.Where(a => a.Code == code).ToListAsync();
         }
 
-        public Task<IEnumerable<Company>> getWarehouses()
+        public Task<IEnumerable<Company>> getWarehouses(string code)
         {
             throw new NotImplementedException();//Santiago Debe Implementar
         }

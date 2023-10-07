@@ -20,10 +20,10 @@ namespace QRStockMate.Services
 
         public async Task<IEnumerable<Company>> getWarehouses(string code)
         {
-            return await _companyRepository.getWarehouses();
+            return await _companyRepository.getWarehouses(code);
         }
 
-        public async Task<IEnumerable<Company>> getEmployees(string code)
+        public async Task<IEnumerable<User>> getEmployees(string code)
         {
             return await _companyRepository.getEmployees(code);
         }

@@ -10,7 +10,7 @@ namespace QRStockMate.AplicationCore.Interfaces.Services
 {
     public interface ICompanyService:IBaseService<Company>
     {
-        public Task<IEnumerable<Company>> getEmployees(string code);
+        public Task<IEnumerable<User>> getEmployees(string code);
 
         public Task<IEnumerable<Company>> getWarehouses(string code);
     }
