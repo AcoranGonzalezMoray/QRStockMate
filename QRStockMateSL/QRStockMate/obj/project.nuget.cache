@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "9lBfGhJHbl8JmQgbhSxzPoYz3UjsujYjdt/u5yDBgJktCOE3BM2GsCtDYQtX9YyPPZLXHtxSwwBIwTgtyzUGQg==",
+  "dgSpecHash": "+0dFhEkyKkDRlIZseQXcirb5ZylB83+iFxxf0EuECoULlOSBGJ/TGQfLroOlBIe8fndonWQ+FEoPjcmNdce9rQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
   "expectedPackageFiles": [
@@ -53,7 +53,6 @@
     "C:\\Users\\acora\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\system.configuration.configurationmanager\\6.0.1\\system.configuration.configurationmanager.6.0.1.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
-    "C:\\Users\\acora\\.nuget\\packages\\system.diagnostics.tools\\4.3.0\\system.diagnostics.tools.4.3.0.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\system.formats.asn1\\5.0.0\\system.formats.asn1.5.0.0.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.24.0\\system.identitymodel.tokens.jwt.6.24.0.nupkg.sha512",

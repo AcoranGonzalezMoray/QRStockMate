@@ -4,8 +4,8 @@ using QRStockMate.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Entities;
-using QRStockMate.AplicationCore.Interfaces.Service;
 using QRStockMate.Model;
+using QRStockMate.AplicationCore.Interfaces.Services;
 
 namespace QRStockMate.Controller
 {

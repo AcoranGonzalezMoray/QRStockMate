@@ -11,6 +11,10 @@ namespace CleanArquitecture.Api.Mapping
             //User
             CreateMap<User, UserModel>();
             CreateMap<UserModel, User>();
+
+            //Company
+            CreateMap<Company, CompanyModel>();
+            CreateMap<CompanyModel, Company>();
         }
     }
 }

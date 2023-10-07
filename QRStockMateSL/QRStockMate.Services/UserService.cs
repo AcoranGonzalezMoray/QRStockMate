@@ -1,6 +1,6 @@
 ﻿using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
-using QRStockMate.AplicationCore.Interfaces.Service;
+using QRStockMate.AplicationCore.Interfaces.Services;
 
 
 namespace QRStockMate.Services
@@ -14,7 +14,7 @@ namespace QRStockMate.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<User>> getCompany(string code)
+        public async Task<Company> getCompany(string code)
         {
           return  await _userRepository.getCompany(code);
         }

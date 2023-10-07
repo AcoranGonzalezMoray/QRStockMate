@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QRStockMate.AplicationCore.Interfaces.Repositories
+namespace QRStockMate.AplicationCore.Interfaces.Repository
 {
     public interface IStorageRepository
     {

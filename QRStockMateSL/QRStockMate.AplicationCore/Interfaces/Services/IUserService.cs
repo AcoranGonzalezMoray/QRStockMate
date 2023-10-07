@@ -1,11 +1,11 @@
 ﻿
 using QRStockMate.AplicationCore.Entities;
 
-namespace QRStockMate.AplicationCore.Interfaces.Service
+namespace QRStockMate.AplicationCore.Interfaces.Services
 {
     public interface IUserService:IBaseService<User>
     {
-        public Task<IEnumerable<User>> getCompany(string code);
+        public Task<Company> getCompany(string code);
         public Task<User> getUserByEmailPassword(string email, string password);
     }
 }

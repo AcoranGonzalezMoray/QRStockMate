@@ -17,7 +17,7 @@ namespace QRStockMate.Infrastructure.Repositories
             _entities = _context.Set<User>();
         }
 
-        public Task<IEnumerable<User>> getCompany(string code)
+        public Task<Company> getCompany(string code)
         {
             throw new NotImplementedException(); //Falta que Javi Implemente
         }
