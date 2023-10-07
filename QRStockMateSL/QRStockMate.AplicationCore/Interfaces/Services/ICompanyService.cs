@@ -1,5 +1,5 @@
 ﻿using QRStockMate.AplicationCore.Entities;
-using QRStockMate.AplicationCore.Interfaces.Service;
+using QRStockMate.AplicationCore.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

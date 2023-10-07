@@ -1,7 +1,7 @@
 ﻿
 using QRStockMate.AplicationCore.Entities;
 
-namespace QRStockMate.AplicationCore.Interfaces.Service
+namespace QRStockMate.AplicationCore.Interfaces.Services
 {
     public interface IUserService:IBaseService<User>
     {

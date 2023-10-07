@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
-using QRStockMate.AplicationCore.Interfaces.Service;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Model;
 
@@ -29,7 +28,6 @@ namespace QRStockMate.Controller
         {
             try
             {
-                Console.WriteLine("Diosss bro llegué");
                 var companies = await _companyService.GetAll();
 
                 if (companies is null) return NotFound();//404
@@ -101,5 +99,25 @@ namespace QRStockMate.Controller
                 return BadRequest(ex.Message);//400
             }
         }
+
+        //Obtener Empledos
+        [HttpPost("Employees")]
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetEmployees([FromBody]Company company)
+        {
+            try
+            {
+                var users = await _companyService.getEmployees(company.Code);
+
+                if (users is null) return NotFound();//404
+
+                return Ok(_mapper.Map<IEnumerable<User>, IEnumerable<UserModel>>(users)); //200
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);//400
+            }
+        }
+        //obtener Almacenes -- Falta Santi
     }
 }

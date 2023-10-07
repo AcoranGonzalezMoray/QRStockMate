@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
-using QRStockMate.AplicationCore.Interfaces.Service;
+using QRStockMate.AplicationCore.Interfaces.Services;
+using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Infrastructure.Data;
 using QRStockMate.Infrastructure.Repositories;
 using QRStockMate.Services;
@@ -27,10 +28,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
-    //Entities
-    //--Model
+    //User
 builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+
+    //Company
+builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
+builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
 
 
 //AutoMapper

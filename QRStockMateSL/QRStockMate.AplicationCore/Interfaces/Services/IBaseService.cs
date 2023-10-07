@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QRStockMate.AplicationCore.Interfaces.Service
+namespace QRStockMate.AplicationCore.Interfaces.Services
 {
     public interface IBaseService<TEntity> where TEntity : class
     {
