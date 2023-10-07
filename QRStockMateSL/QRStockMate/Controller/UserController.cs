@@ -43,14 +43,36 @@ namespace QRStockMate.Controller
 
             try
             {
-                _userService.Create(_mapper.Map<UserModel, User>(value));
+                var user = _mapper.Map<UserModel, User>(value);
+
+                await _userService.Create(user);
 
                 return CreatedAtAction("Get", new { id = value.Id }, value);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message);
+                return BadRequest(e.Message);//400
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<UserModel>> Put([FromBody] UserModel model)
+        {
+            try
+            {
+                var user = _mapper.Map<UserModel, User>(model);
+
+                if (user is null) return NotFound();//404
+
+                await _userService.Update(user);
+
+                return NoContent(); //202
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);//400
             }
         }
 

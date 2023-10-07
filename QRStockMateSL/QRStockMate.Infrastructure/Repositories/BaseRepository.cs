@@ -17,19 +17,19 @@ namespace QRStockMate.Infrastructure.Repositories
             _entities = _context.Set<TEntity>();
         }
 
-        public async void Create(TEntity entity)
+        public async Task Create(TEntity entity)
         {
-            await _entities.AddAsync(entity);
+            _entities.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async  void Delete(TEntity entity)
+        public async  Task Delete(TEntity entity)
         {
             _entities.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async  void DeleteRange(IEnumerable<TEntity> entities)
+        public async  Task DeleteRange(IEnumerable<TEntity> entities)
         {
             _entities.RemoveRange(entities);
             await _context.SaveChangesAsync();
