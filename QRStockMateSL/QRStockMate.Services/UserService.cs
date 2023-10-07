@@ -1,6 +1,6 @@
 ﻿using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
-using QRStockMate.AplicationCore.Interfaces.Service;
+using QRStockMate.AplicationCore.Interfaces.Services;
 
 
 namespace QRStockMate.Services
@@ -14,19 +14,18 @@ namespace QRStockMate.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<User>> getCompany(string code)
+        public async Task DeleteAccount(string code)
+        {
+            await _userRepository.DeleteAccount(code);
+        }
+
+        public async Task<Company> getCompany(string code)
         {
           return  await _userRepository.getCompany(code);
         }
-
-        public async  Task<IEnumerable<User>> getEmployees(string code)
+        public async  Task<User> getUserByEmailPassword(string email, string password)
         {
-            return await _userRepository.getEmployees(code);
-        }
-
-        public async Task<IEnumerable<User>> getWarehouses()
-        {
-            return await _userRepository.getWarehouses();
+          return await _userRepository.getUserByEmailPassword(email, password);
         }
     }
 }
