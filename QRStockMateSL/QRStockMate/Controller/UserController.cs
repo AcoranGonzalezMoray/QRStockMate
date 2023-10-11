@@ -92,7 +92,7 @@ namespace QRStockMate.Controller
 
                 if (user is null) return NotFound();//404
 
-                await _context_storage.DeleteImage(user.Url);
+                //await _context_storage.DeleteImage(user.Url);
                 await _userService.Delete(user);
 
                 return NoContent(); //202
@@ -147,12 +147,12 @@ namespace QRStockMate.Controller
                 if (userE != null) { return Conflict(); }//409
 
                 //RECIBIR LOS DATOS DEL FORMULARIO
-               // Stream image_stream = image.OpenReadStream();
-               // string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+                // Stream image_stream = image.OpenReadStream();
+                // string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
 
 
                 user.Password = Utility.Utility.EncriptarClave(user.Password);
-              //  user.Url = urlimagen;
+                //  user.Url = urlimagen;
 
                 if (user.Code.Length == 0) {
                     user.Code = Utility.Utility.GenerateCode();
@@ -162,6 +162,9 @@ namespace QRStockMate.Controller
                     company.Code = user.Code;
                     await _companyService.Create(company);
 
+                }else
+                {
+                    user.Role = RoleUser.User;
                 }
                
                 var userEntity = _mapper.Map<UserModel,User>(user);
