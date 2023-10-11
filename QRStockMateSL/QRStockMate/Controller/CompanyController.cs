@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
@@ -19,9 +18,6 @@ namespace QRStockMate.Controller
             _companyService = companyService;
             _mapper = mapper;
         }
-
-
-        //---------------- FUNCIONES BASICAS (GET, POST, PUT, DELETE) ----------------
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Get()
@@ -100,7 +96,7 @@ namespace QRStockMate.Controller
             }
         }
 
-        //Obtener Empledos
+        //Obtener Empleados
         [HttpPost("Employees")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetEmployees([FromBody]Company company)
         {

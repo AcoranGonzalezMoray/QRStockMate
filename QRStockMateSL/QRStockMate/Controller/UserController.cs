@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using QRStockMate.Utility;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Entities;
-using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Model;
+using QRStockMate.AplicationCore.Interfaces.Services;
+
 
 namespace QRStockMate.Controller
 {
@@ -14,11 +13,15 @@ namespace QRStockMate.Controller
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ICompanyService _companyService;
+        private readonly IStorageService _context_storage;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService,IStorageService storageService, IMapper mapper, ICompanyService companyService)
         {
             _userService = userService;
+            _context_storage = storageService;
             _mapper = mapper;
+            _companyService = companyService;
         }
 
         //FUNCIONES BASICAS
@@ -89,6 +92,7 @@ namespace QRStockMate.Controller
 
                 if (user is null) return NotFound();//404
 
+                //await _context_storage.DeleteImage(user.Url);
                 await _userService.Delete(user);
 
                 return NoContent(); //202
@@ -130,18 +134,41 @@ namespace QRStockMate.Controller
 
         [AllowAnonymous]
         [HttpPost("Registro")]
-        public async Task<IActionResult> Registro(User user)
+        public async Task<IActionResult> Registro([FromBody] RegistrationModel model)
         {
+            //[FromForm] IFormFile image
             try
             {
+                var user =model.User;
+                var company = _mapper.Map<CompanyModel, Company>(model.Company);
+
                 var userE = await _userService.getUserByEmailPassword(user.Email, Utility.Utility.EncriptarClave(user.Password));
 
                 if (userE != null) { return Conflict(); }//409
 
-                user.Password = Utility.Utility.EncriptarClave(user.Password);
-                user.Code = Utility.Utility.GenerateCode();
+                //RECIBIR LOS DATOS DEL FORMULARIO
+                // Stream image_stream = image.OpenReadStream();
+                // string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
 
-                await _userService.Create(user);
+
+                user.Password = Utility.Utility.EncriptarClave(user.Password);
+                //  user.Url = urlimagen;
+
+                if (user.Code.Length == 0) {
+                    user.Code = Utility.Utility.GenerateCode();
+                    user.Role = RoleUser.Director;
+
+                    //Al ser director se crea la empresa aqui
+                    company.Code = user.Code;
+                    await _companyService.Create(company);
+
+                }else
+                {
+                    user.Role = RoleUser.User;
+                }
+               
+                var userEntity = _mapper.Map<UserModel,User>(user);
+                await _userService.Create(userEntity);
 
                 return CreatedAtAction("Get", new { id = user.Id }, user);
             }
@@ -151,8 +178,42 @@ namespace QRStockMate.Controller
             }
         }
 
-
         //Funciones Especiales
-        
+        [HttpPost("Company")]
+        public async Task<ActionResult<Company>> GetCompanyByUser([FromBody]UserModel user)
+        {
+            try
+            {
+                var company = await _userService.getCompany(user.Code);
+
+                return Ok(_mapper.Map<Company, CompanyModel>(company));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteAccount")]
+        public async Task<ActionResult<Company>> DeleteAccount([FromBody] UserModel user)
+        {
+            try
+            {
+                
+                var userEntity = _mapper.Map<UserModel, User>(user);
+                //await _context_storage.DeleteImage(user.Url);
+
+
+                await _userService.DeleteAccount(userEntity.Code);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }
