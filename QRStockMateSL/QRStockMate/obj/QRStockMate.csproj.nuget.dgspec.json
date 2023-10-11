@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {}
+    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {}
   },
   "projects": {
-    "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {
+    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
         "projectName": "QRStockMate",
-        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
         "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate\\obj\\",
+        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

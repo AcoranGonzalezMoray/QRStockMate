@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yn0t9DKT3ruNG8xhSGuyHU0m1JIDnYYdbrx4mXdzAWzU25foHWZxgsffRDnHCgA145A8EV/Ot36PmnXlRjC4Rw==",
+  "dgSpecHash": "Fd6p9R2Pc4euRrB+dZ/MnHV6WZj17YIpVszgumdxXrIHcq9SmDVp0CYJUSEQfzBR2IJoNJrrZ+3WzGW7xCOwvQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
+  "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
