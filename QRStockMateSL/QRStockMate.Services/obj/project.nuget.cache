@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "Fd6p9R2Pc4euRrB+dZ/MnHV6WZj17YIpVszgumdxXrIHcq9SmDVp0CYJUSEQfzBR2IJoNJrrZ+3WzGW7xCOwvQ==",
+  "dgSpecHash": "F978aG5L5CQPsSl8JXjEnCTVOoeGnHjdbLY9bXSnw5opmQevI3RgAGQsGYdkU3RQj7HOXSF5MKRZf4yjMo2/Dg==",
   "success": true,
   "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
   "expectedPackageFiles": [],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problema al leer el archivo de caché C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

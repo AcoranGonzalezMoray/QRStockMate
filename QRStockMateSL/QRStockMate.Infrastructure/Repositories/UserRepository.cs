@@ -2,6 +2,7 @@
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.Infrastructure.Data;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace QRStockMate.Infrastructure.Repositories
 {
@@ -9,27 +10,40 @@ namespace QRStockMate.Infrastructure.Repositories
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly DbSet<User> _entities;
+        
 
         public UserRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
-            _entities = _context.Set<User>();
+            
         }
 
-        public Task<IEnumerable<User>> getCompany()
+        public async Task DeleteAccount(string code)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.Where(d=>d.Code==code).FirstOrDefaultAsync();
+            var company = await _context.Companies.Where(d => d.Code == code).FirstOrDefaultAsync();
+
+            if (company != null && user != null)
+            {
+                _context.Users.Remove(user);
+                _context.Companies.Remove(company);
+                //almecen
+                //articulos
+                await _context.SaveChangesAsync();
+            }
+
+
+
         }
 
-        public Task<IEnumerable<User>> getEmployees()
+        public async Task<Company> getCompany(string code)
         {
-            throw new NotImplementedException();
+            return await _context.Companies.Where(d => d.Code == code).FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<User>> getWarehouses()
+        public async Task<User> getUserByEmailPassword(string email, string password)
         {
-            throw new NotImplementedException();
+            return await _context.Users.Where(d => d.Email == email && d.Password == password).FirstOrDefaultAsync();
         }
     }
 }
