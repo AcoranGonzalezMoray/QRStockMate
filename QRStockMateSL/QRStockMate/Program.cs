@@ -34,8 +34,12 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
     //Company
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
+    
+    //Item
+builder.Services.AddScoped(typeof(IItemService), typeof(ItemService));
+builder.Services.AddScoped(typeof(IItemRepository), typeof(ItemRepository));
 
-    //StorageFirebase
+//StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
