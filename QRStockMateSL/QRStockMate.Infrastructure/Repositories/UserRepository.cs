@@ -28,12 +28,9 @@ namespace QRStockMate.Infrastructure.Repositories
                 _context.Users.Remove(user);
                 _context.Companies.Remove(company);
                 //almecen
-                //articulos
+                //_context.Items.RemoveRange();
                 await _context.SaveChangesAsync();
             }
-
-
-
         }
 
         public async Task<Company> getCompany(string code)
