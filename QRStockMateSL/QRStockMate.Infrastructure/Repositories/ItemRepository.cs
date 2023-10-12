@@ -21,7 +21,7 @@ namespace QRStockMate.Infrastructure.Repositories
 
         public async Task<IEnumerable<Item>> getItems(string name)
         {
-            return await _context.Items.Where(a => a.Name == name).ToListAsync();
+            return await _context.Items.Where(a => a.Name.Contains(name)).ToListAsync();
         }
     }
 }
