@@ -9,9 +9,8 @@ namespace QRStockMate.AplicationCore.Interfaces.Repositories
 {
     public interface ICompanyRepository: IBaseRepository<Company>
     {
-        //almacenes de empresa
         public Task<IEnumerable<Company>> getWarehouses(string code);
-        //empleados de empresa
         public Task<IEnumerable<User>> getEmployees(string code);
+        public Task<Company> getCompanyByCode(string code);
     }
 }

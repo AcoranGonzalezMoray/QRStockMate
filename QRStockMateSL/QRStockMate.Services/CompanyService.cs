@@ -27,5 +27,10 @@ namespace QRStockMate.Services
         {
             return await _companyRepository.getEmployees(code);
         }
+
+        public async Task<Company> getCompanyByCode(string code)
+        {
+            return await _companyRepository.getCompanyByCode(code);
+        }
     }
 }

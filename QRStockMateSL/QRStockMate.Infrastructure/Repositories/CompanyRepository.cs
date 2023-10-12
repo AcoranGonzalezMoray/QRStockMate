@@ -19,6 +19,11 @@ namespace QRStockMate.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Company> getCompanyByCode(string code)
+        {
+            return await _context.Companies.Where(a => a.Code == code).FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<User>> getEmployees(string code)
         {
             

@@ -35,11 +35,15 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
 
+    //TransactionHistory
+builder.Services.AddScoped(typeof(ITransactionHistoryService), typeof(TransactionHistoryService));
+builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(TransactionHistoryRepository));
+
     //StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
-//AutoMapper
+    //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
 
