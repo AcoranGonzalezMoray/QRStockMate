@@ -99,6 +99,23 @@ namespace QRStockMate.Controller
             }
         }
 
-        //Añadir función de obtener por nombre
+        //Obtener Items por nombre
+        [HttpGet("Items/{name}")]
+        public async Task<ActionResult<IEnumerable<ItemModel>>> GetItemsByName(string name)
+        {
+            try
+            {
+                var items = await _itemService.getItems(name);
+
+                if (items is null) return NotFound();//404
+
+                return Ok(_mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(items)); //200
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);//400
+            }
+        }
     }
 }
