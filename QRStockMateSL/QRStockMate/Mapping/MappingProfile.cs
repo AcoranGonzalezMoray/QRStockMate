@@ -16,6 +16,10 @@ namespace CleanArquitecture.Api.Mapping
             CreateMap<Company, CompanyModel>();
             CreateMap<CompanyModel, Company>();
 
+            //Item
+            CreateMap<Item, ItemModel>();
+            CreateMap<ItemModel, Item>();
+
             //TransactionHistory
             CreateMap<TransactionHistory, TransactionHistoryModel>();
             CreateMap<TransactionHistoryModel, TransactionHistory>();

@@ -58,6 +58,37 @@ namespace QRStockMate.Infrastructure.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("QRStockMate.AplicationCore.Entities.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("stock")
+                        .HasColumnType("int");
+
+                    b.Property<string>("url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("warehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Items");
+                });
+
             modelBuilder.Entity("QRStockMate.AplicationCore.Entities.TransactionHistory", b =>
                 {
                     b.Property<int>("Id")

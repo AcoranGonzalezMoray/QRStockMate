@@ -34,6 +34,10 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
     //Company
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
+    
+    //Item
+builder.Services.AddScoped(typeof(IItemService), typeof(ItemService));
+builder.Services.AddScoped(typeof(IItemRepository), typeof(ItemRepository));
 
     //TransactionHistory
 builder.Services.AddScoped(typeof(ITransactionHistoryService), typeof(TransactionHistoryService));
