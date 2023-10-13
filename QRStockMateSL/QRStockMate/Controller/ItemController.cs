@@ -100,7 +100,7 @@ namespace QRStockMate.Controller
         }
 
         //Obtener Items por nombre
-        [HttpGet("Items/{name}")]
+        [HttpGet("Search/{name}")]
         public async Task<ActionResult<IEnumerable<ItemModel>>> GetItemsByName(string name)
         {
             try
