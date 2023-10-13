@@ -107,7 +107,7 @@ namespace QRStockMate.Controller
 
         //FUNCIONES DE LOGIN
         [AllowAnonymous]
-        [HttpPost("IniciarSesion")]
+        [HttpPost("SignIn")]
         public async Task<IActionResult> IniciarSesion([FromForm] string email, [FromForm] string password)
         {
             try
@@ -133,10 +133,9 @@ namespace QRStockMate.Controller
         }
 
         [AllowAnonymous]
-        [HttpPost("Registro")]
+        [HttpPost("SignUp")]
         public async Task<IActionResult> Registro([FromBody] RegistrationModel model)
         {
-            //[FromForm] IFormFile image
             try
             {
                 var user =model.User;
@@ -146,7 +145,7 @@ namespace QRStockMate.Controller
 
                 if (userE != null) { return Conflict(); }//409
 
-                //RECIBIR LOS DATOS DEL FORMULARIO
+                //RECIBIR LOS DATOS DEL FORMULARIO  ->>>>>>>> IMAGEN PREDETERMINADA
                 // Stream image_stream = image.OpenReadStream();
                 // string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
 
@@ -214,6 +213,34 @@ namespace QRStockMate.Controller
             }
         }
 
+        [HttpPost("UpdateImage")]
+        public async Task<IActionResult> UpdateImage([FromForm] int userId,[FromForm] IFormFile image)
+        {
+            try
+            {
+
+                var user = await _userService.GetById(userId);      
+                if (user == null)return NotFound(); 
+
+                await _context_storage.DeleteImage(user.Url);
+
+                Stream image_stream = image.OpenReadStream();
+                string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+
+                user.Url = urlimagen;
+
+                await _userService.Update(user);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
+
+
+    
 }
