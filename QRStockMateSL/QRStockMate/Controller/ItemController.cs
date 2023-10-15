@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
@@ -13,12 +14,14 @@ namespace QRStockMate.Controller
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
+        private readonly IStorageService _context_storage;
         private readonly IMapper _mapper;
 
-        public ItemController(IItemService itemService, IMapper mapper)
+        public ItemController(IItemService itemService, IMapper mapper, IStorageService context_storage)
         {
             _itemService = itemService;
             _mapper = mapper;
+            _context_storage = context_storage;
         }
 
         //------------------------ Sentencias ------------------------------
@@ -87,7 +90,11 @@ namespace QRStockMate.Controller
                 var item = _mapper.Map<ItemModel, Item>(model);
 
                 if (item is null) return NotFound();//404
-
+                if (Uri.IsWellFormedUriString(item.Url, UriKind.Absolute))
+                {
+                    // Es una URL válida, puedes proceder con la eliminación
+                    await _context_storage.DeleteImage(item.Url);
+                }
                 await _itemService.Delete(item);
 
                 return NoContent(); //202
@@ -115,6 +122,35 @@ namespace QRStockMate.Controller
             {
 
                 return BadRequest(ex.Message);//400
+            }
+        }
+
+        [HttpPost("UpdateImage")]
+        public async Task<IActionResult> UpdateImage([FromForm] int itemId, [FromForm] IFormFile image)
+        {
+            try
+            {
+
+                var item = await _itemService.GetById(itemId);
+                if (item == null) return NotFound();
+
+                if (Uri.IsWellFormedUriString(item.Url, UriKind.Absolute))
+                {
+                    // Es una URL válida, puedes proceder con la eliminación
+                    await _context_storage.DeleteImage(item.Url);
+                }
+                Stream image_stream = image.OpenReadStream();
+                string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+
+                item.Url = urlimagen;
+
+                await _itemService.Update(item);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
             }
         }
     }

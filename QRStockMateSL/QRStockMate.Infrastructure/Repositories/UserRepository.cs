@@ -2,7 +2,7 @@
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.Infrastructure.Data;
-using static System.Reflection.Metadata.BlobBuilder;
+
 
 namespace QRStockMate.Infrastructure.Repositories
 {
@@ -10,23 +10,35 @@ namespace QRStockMate.Infrastructure.Repositories
     {
 
         private readonly ApplicationDbContext _context;
-        
+        private readonly IStorageRepository _contextStorage;
 
-        public UserRepository(ApplicationDbContext context) : base(context)
+        public UserRepository(ApplicationDbContext context, IStorageRepository storage) : base(context)
         {
             _context = context;
-            
+           _contextStorage = storage;
         }
 
         public async Task DeleteAccount(string code)
         {
-            var user = await _context.Users.Where(d=>d.Code==code).FirstOrDefaultAsync();
+            var users = await _context.Users.Where(d=>d.Code==code).ToListAsync();
             var company = await _context.Companies.Where(d => d.Code == code).FirstOrDefaultAsync();
 
-            if (company != null && user != null)
+            if (company != null && users != null)
             {
-                _context.Users.Remove(user);
+                //Borrado Usuarios
+                foreach (var user in users)
+                {
+                     await _contextStorage.DeleteImage(user.Url);
+                }
+
+                _context.Users.RemoveRange(users);
+
+
+                //Borrado de Compañia
                 _context.Companies.Remove(company);
+
+
+
                 //almecen
                 //_context.Items.RemoveRange();
                 await _context.SaveChangesAsync();
