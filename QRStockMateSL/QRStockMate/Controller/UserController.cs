@@ -162,6 +162,9 @@ namespace QRStockMate.Controller
 
                 }else
                 {
+                    var userC = await _userService.getDirectorByCode(user.Code);
+                    if(userC == null) { return BadRequest("No existe un director con ese codigo asociado"); }
+
                     user.Role = RoleUser.User;
                 }
                

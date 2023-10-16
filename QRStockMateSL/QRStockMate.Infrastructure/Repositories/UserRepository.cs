@@ -54,5 +54,10 @@ namespace QRStockMate.Infrastructure.Repositories
         {
             return await _context.Users.Where(d => d.Email == email && d.Password == password).FirstOrDefaultAsync();
         }
+
+        public async Task<User> getDirectorByCode(string code)
+        {
+            return await _context.Users.Where(d=>d.Code==code && d.Role==RoleUser.Director).FirstOrDefaultAsync();
+        }
     }
 }

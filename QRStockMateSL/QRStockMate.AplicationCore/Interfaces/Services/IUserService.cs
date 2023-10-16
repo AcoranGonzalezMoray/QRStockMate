@@ -7,6 +7,7 @@ namespace QRStockMate.AplicationCore.Interfaces.Services
     {
         public Task<Company> getCompany(string code);
         public Task DeleteAccount(string code);
+        public Task<User> getDirectorByCode(string code);
         public Task<User> getUserByEmailPassword(string email, string password);
     }
 }
