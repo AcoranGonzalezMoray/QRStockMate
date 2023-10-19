@@ -47,3 +47,20 @@ C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Jav
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.csproj.CopyComplete
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.genruntimeconfig.cache
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\ref\QRStockMate.Infrastructure.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.Infrastructure.deps.json
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.Infrastructure.runtimeconfig.json
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.Infrastructure.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.Infrastructure.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.AplicationCore.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\bin\Debug\net7.0\QRStockMate.AplicationCore.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.AssemblyInfo.cs
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.csproj.CopyComplete
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\refint\QRStockMate.Infrastructure.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\QRStockMate.Infrastructure.genruntimeconfig.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Infrastructure\obj\Debug\net7.0\ref\QRStockMate.Infrastructure.dll

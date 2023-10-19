@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {}
+    "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {}
   },
   "projects": {
-    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+    "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
+        "projectUniqueName": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
         "projectName": "QRStockMate.AplicationCore",
-        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
-        "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\obj\\",
+        "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
+        "packagesPath": "C:\\Users\\saflo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\saflo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -59,24 +59,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
+    "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
         "projectName": "QRStockMate.Infrastructure",
-        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\saflo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\saflo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -91,8 +91,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
-                "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
+              "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+                "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
               }
             }
           }
@@ -146,24 +146,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj": {
+    "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
+        "projectUniqueName": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
         "projectName": "QRStockMate.Services",
-        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
-        "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\obj\\",
+        "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj",
+        "packagesPath": "C:\\Users\\saflo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\saflo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -178,8 +178,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
-                "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
+              "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+                "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
               }
             }
           }
@@ -209,24 +209,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {
+    "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+        "projectUniqueName": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
         "projectName": "QRStockMate",
-        "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
-        "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\obj\\",
+        "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+        "packagesPath": "C:\\Users\\saflo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\saflo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -241,14 +241,14 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
-                "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
+              "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+                "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
               },
-              "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj"
+              "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj"
               },
-              "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj": {
-                "projectPath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj"
+              "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj": {
+                "projectPath": "C:\\Users\\saflo\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Services\\QRStockMate.Services.csproj"
               }
             }
           }
@@ -301,7 +301,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

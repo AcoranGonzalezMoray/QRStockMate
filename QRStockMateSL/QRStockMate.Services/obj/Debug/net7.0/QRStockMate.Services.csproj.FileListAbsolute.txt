@@ -43,3 +43,18 @@ C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Jav
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\refint\QRStockMate.Services.dll
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.pdb
 C:\Users\Javi\OneDrive - Universidad de Las Palmas de Gran Canaria\Documents\Javier\Proyectos\PAMN_GitHub\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\ref\QRStockMate.Services.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.deps.json
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.AplicationCore.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.AplicationCore.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.AssemblyReference.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.AssemblyInfoInputs.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.AssemblyInfo.cs
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.CoreCompileInputs.cache
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.CopyComplete
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\refint\QRStockMate.Services.dll
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.pdb
+C:\Users\saflo\Source\Repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\ref\QRStockMate.Services.dll
