@@ -84,7 +84,7 @@ namespace QRStockMate.Controller
         }
 
         [HttpDelete]
-        public async Task<ActionResult<UserModel>> Delete([FromBody] UserModel model)
+        public async Task<IActionResult> Delete([FromBody] UserModel model)
         {
             try
             {
@@ -92,7 +92,11 @@ namespace QRStockMate.Controller
 
                 if (user is null) return NotFound();//404
 
-                //await _context_storage.DeleteImage(user.Url);
+                if (Uri.IsWellFormedUriString(user.Url, UriKind.Absolute))
+                {
+                    // Es una URL válida, puedes proceder con la eliminación
+                    await _context_storage.DeleteImage(user.Url);
+                }
                 await _userService.Delete(user);
 
                 return NoContent(); //202
@@ -107,7 +111,7 @@ namespace QRStockMate.Controller
 
         //FUNCIONES DE LOGIN
         [AllowAnonymous]
-        [HttpPost("IniciarSesion")]
+        [HttpPost("SignIn")]
         public async Task<IActionResult> IniciarSesion([FromForm] string email, [FromForm] string password)
         {
             try
@@ -133,10 +137,9 @@ namespace QRStockMate.Controller
         }
 
         [AllowAnonymous]
-        [HttpPost("Registro")]
+        [HttpPost("SignUp")]
         public async Task<IActionResult> Registro([FromBody] RegistrationModel model)
         {
-            //[FromForm] IFormFile image
             try
             {
                 var user =model.User;
@@ -146,13 +149,8 @@ namespace QRStockMate.Controller
 
                 if (userE != null) { return Conflict(); }//409
 
-                //RECIBIR LOS DATOS DEL FORMULARIO
-                // Stream image_stream = image.OpenReadStream();
-                // string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
-
-
                 user.Password = Utility.Utility.EncriptarClave(user.Password);
-                //  user.Url = urlimagen;
+
 
                 if (user.Code.Length == 0) {
                     user.Code = Utility.Utility.GenerateCode();
@@ -164,6 +162,9 @@ namespace QRStockMate.Controller
 
                 }else
                 {
+                    var userC = await _userService.getDirectorByCode(user.Code);
+                    if(userC == null) { return BadRequest("No existe un director con ese codigo asociado"); }
+
                     user.Role = RoleUser.User;
                 }
                
@@ -195,18 +196,22 @@ namespace QRStockMate.Controller
         }
 
         [HttpDelete("DeleteAccount")]
-        public async Task<ActionResult<Company>> DeleteAccount([FromBody] UserModel user)
+        public async Task<IActionResult> DeleteAccount([FromBody] UserModel user)
         {
             try
             {
-                
-                var userEntity = _mapper.Map<UserModel, User>(user);
-                //await _context_storage.DeleteImage(user.Url);
 
+                if (user.Role == RoleUser.Director)
+                {
+                    var userEntity = _mapper.Map<UserModel, User>(user);
 
-                await _userService.DeleteAccount(userEntity.Code);
+                    await _userService.DeleteAccount(userEntity.Code);
 
-                return NoContent();
+                    return NoContent();
+                }
+                else {
+                    return BadRequest("The user have been Director");
+                }
             }
             catch (Exception ex)
             {
@@ -214,6 +219,38 @@ namespace QRStockMate.Controller
             }
         }
 
+        [HttpPost("UpdateImage")]
+        public async Task<IActionResult> UpdateImage([FromForm] int userId,[FromForm] IFormFile image)
+        {
+            try
+            {
+
+                var user = await _userService.GetById(userId);      
+                if (user == null)return NotFound();
+
+                if (Uri.IsWellFormedUriString(user.Url, UriKind.Absolute))
+                {
+                    // Es una URL válida, puedes proceder con la eliminación
+                    await _context_storage.DeleteImage(user.Url);
+                }
+
+                Stream image_stream = image.OpenReadStream();
+                string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+
+                user.Url = urlimagen;
+
+                await _userService.Update(user);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
+
+
+    
 }

@@ -34,6 +34,15 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
     //Company
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
+    
+    //Item
+builder.Services.AddScoped(typeof(IItemService), typeof(ItemService));
+builder.Services.AddScoped(typeof(IItemRepository), typeof(ItemRepository));
+
+    //TransactionHistory
+builder.Services.AddScoped(typeof(ITransactionHistoryService), typeof(TransactionHistoryService));
+builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(TransactionHistoryRepository));
+
     //Warehouse
 builder.Services.AddScoped(typeof(IWarehouseService), typeof(WarehouseService));
 builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseRepository));
@@ -41,7 +50,7 @@ builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseReposit
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
-//AutoMapper
+    //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
 
