@@ -36,6 +36,26 @@ namespace QRStockMate.Utility
             // Formato 'XXX-XXX' o el formato que necesites
             return $"{formattedString.Substring(0, 3)}-{formattedString.Substring(3)}";
         }
+        public static string RemoveSpecificId(string originalString, int idToRemove)
+        {
+            // Elimina espacios en blanco alrededor de los números
+            originalString = originalString.Trim();
+
+            // Divide la cadena original en una lista de IDs
+            List<int> idList = originalString.Split(';')
+                                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                                            .Select(int.Parse)
+                                            .ToList();
+
+            // Elimina el ID específico de la lista
+            idList.Remove(idToRemove);
+
+            // Convierte la lista actualizada de IDs de nuevo a una cadena
+            string updatedString = string.Join(";", idList);
+            updatedString += ";";
+            return updatedString;
+        }
+
 
 
     }

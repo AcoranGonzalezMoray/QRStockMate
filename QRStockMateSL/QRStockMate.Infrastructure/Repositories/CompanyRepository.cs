@@ -30,9 +30,24 @@ namespace QRStockMate.Infrastructure.Repositories
             return await _context.Users.Where(a => a.Code == code).ToListAsync();
         }
 
-        public Task<IEnumerable<Company>> getWarehouses(string code)
+        public async  Task<IEnumerable<Warehouse>> getWarehouses(string code)
         {
-            throw new NotImplementedException();//Santiago Debe Implementar
+            // 6;7;8;2;
+            var company = await this.getCompanyByCode(code);
+            var idWarehouse= company.WarehouseId;
+            idWarehouse = idWarehouse.TrimEnd(';'); // Elimina el último punto y coma
+            List<int> idList = idWarehouse.Split(';').Select(int.Parse).ToList();
+            // Imprimir la lista de enteros en la consola
+            Console.WriteLine("Lista de enteros:");
+            foreach (int id in idList)
+            {
+                Console.WriteLine(id);
+            }
+
+            var warehouses= await _context.Warehouses.Where(w => idList.Contains(w.Id)).ToListAsync();
+
+            return warehouses;
         }
     }
 }
+ 

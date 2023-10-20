@@ -172,7 +172,7 @@ namespace QRStockMate.Infrastructure.Migrations
                     b.Property<int>("IdAdministrator")
                         .HasColumnType("int");
 
-                    b.Property<string>("IdArticles")
+                    b.Property<string>("IdItems")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
