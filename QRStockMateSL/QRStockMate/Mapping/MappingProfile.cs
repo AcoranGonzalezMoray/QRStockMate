@@ -23,6 +23,10 @@ namespace CleanArquitecture.Api.Mapping
             //TransactionHistory
             CreateMap<TransactionHistory, TransactionHistoryModel>();
             CreateMap<TransactionHistoryModel, TransactionHistory>();
+
+            //Warehouse
+            CreateMap<Warehouse, WarehouseModel>();
+            CreateMap<WarehouseModel, Warehouse>();
         }
     }
 }

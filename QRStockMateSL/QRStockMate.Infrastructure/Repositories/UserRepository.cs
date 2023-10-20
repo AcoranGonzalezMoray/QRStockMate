@@ -28,19 +28,40 @@ namespace QRStockMate.Infrastructure.Repositories
                 //Borrado Usuarios
                 foreach (var user in users)
                 {
-                     await _contextStorage.DeleteImage(user.Url);
+                     if(user.Url != "") await _contextStorage.DeleteImage(user.Url);
                 }
 
                 _context.Users.RemoveRange(users);
 
+                //Lista de Almacenes
+                var idWarehouse = company.WarehouseId;
+                idWarehouse = idWarehouse.TrimEnd(';'); // Elimina el último punto y coma
+                List<int> idWarehouseList = idWarehouse.Split(';').Select(int.Parse).ToList();
+
+                var warehouses = await _context.Warehouses.Where(w => idWarehouseList.Contains(w.Id)).ToListAsync();
+
+                //Lista de Articulos
+                var idItems = "";
+                foreach (var warehouse in warehouses)
+                {
+                    idItems += warehouse.IdItems;
+                }
+                idItems = idItems.TrimEnd(';'); // Elimina el último punto y coma
+                List<int> idItemsList = idItems.Split(';').Select(int.Parse).ToList();
+
+                var items = await _context.Items.Where(w => idItemsList.Contains(w.Id)).ToListAsync();
+
+
+
+                //Borrado de Articulos
+                _context.Items.RemoveRange(items);
+
+                //Borrado de Almacen
+                _context.Warehouses.RemoveRange(warehouses);
 
                 //Borrado de Compañia
                 _context.Companies.Remove(company);
 
-
-
-                //almecen
-                //_context.Items.RemoveRange();
                 await _context.SaveChangesAsync();
             }
         }

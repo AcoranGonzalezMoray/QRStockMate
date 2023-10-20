@@ -14,11 +14,13 @@ namespace QRStockMate.Controller
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
+        private readonly IWarehouseService _warehouseService;
         private readonly IStorageService _context_storage;
         private readonly IMapper _mapper;
 
-        public ItemController(IItemService itemService, IMapper mapper, IStorageService context_storage)
+        public ItemController(IItemService itemService, IMapper mapper, IStorageService context_storage, IWarehouseService warehouseService)
         {
+            _warehouseService = warehouseService;
             _itemService = itemService;
             _mapper = mapper;
             _context_storage = context_storage;
@@ -82,12 +84,17 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<ItemModel>> Delete([FromBody] ItemModel model)
+        [HttpDelete] 
+        public async Task<IActionResult> Delete([FromBody] ItemModel model)
         {
             try
             {
                 var item = _mapper.Map<ItemModel, Item>(model);
+                var warehouse = await _warehouseService.GetById(item.WarehouseId);
+
+                warehouse.IdItems = Utility.Utility.RemoveSpecificId(warehouse.IdItems, item.Id);
+
+
 
                 if (item is null) return NotFound();//404
                 if (Uri.IsWellFormedUriString(item.Url, UriKind.Absolute))
@@ -95,7 +102,12 @@ namespace QRStockMate.Controller
                     // Es una URL válida, puedes proceder con la eliminación
                     await _context_storage.DeleteImage(item.Url);
                 }
+
                 await _itemService.Delete(item);
+                await _warehouseService.Update(warehouse);
+
+
+                
 
                 return NoContent(); //202
             }

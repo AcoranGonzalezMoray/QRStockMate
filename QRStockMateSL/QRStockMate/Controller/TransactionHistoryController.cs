@@ -89,7 +89,7 @@ namespace QRStockMate.Controller
         }
 
         [HttpDelete]
-        public async Task<ActionResult<TransactionHistoryModel>> Delete([FromBody] TransactionHistoryModel model)
+        public async Task<IActionResult> Delete([FromBody] TransactionHistoryModel model)
         {
             try
             {

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace QRStockMate.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class v1_merge : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,10 +36,10 @@ namespace QRStockMate.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    warehouseId = table.Column<int>(type: "int", nullable: false),
-                    location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    stock = table.Column<int>(type: "int", nullable: false),
-                    url = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,6 +55,7 @@ namespace QRStockMate.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Operation = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -79,6 +81,23 @@ namespace QRStockMate.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Warehouses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Organization = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdAdministrator = table.Column<int>(type: "int", nullable: false),
+                    IdArticles = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Warehouses", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -95,6 +114,9 @@ namespace QRStockMate.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Warehouses");
         }
     }
 }
