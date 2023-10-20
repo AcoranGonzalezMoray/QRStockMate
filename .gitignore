@@ -1,8 +1,12 @@
 
 *.suo
-QRStockMateSL/.vs/
-QRStockMateSL/QRStockMate.Infrastructure/bin/
-QRStockMateSL/QRStockMate.Infrastructure/obj/
-QRStockMateSL/QRStockMate.Services/obj/
-QRStockMateSL/QRStockMate/bin/
-QRStockMateSL/QRStockMate/obj/
+/QRStockMateSL/.vs/
+/QRStockMateSL/QRStockMate.Infrastructure/bin/
+/QRStockMateSL/QRStockMate.Infrastructure/obj/
+/QRStockMateSL/QRStockMate.Services/obj/
+/QRStockMateSL/QRStockMate/bin/
+/QRStockMateSL/QRStockMate/obj/
+/QRStockMateSL/.vs/QRStockMateSL/FileContentIndex
+/QRStockMateSL/QRStockMate/obj/Debug/net7.0/QRStockMate.csproj.AssemblyReference.cache
+/QRStockMateSL/QRStockMate.Infrastructure/obj/Debug/net7.0/QRStockMate.Infrastructure.csproj.AssemblyReference.cache
+/QRStockMateSL/QRStockMate.Services/obj/Debug/net7.0/QRStockMate.Services.csproj.AssemblyReference.cache

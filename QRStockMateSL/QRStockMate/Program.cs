@@ -43,6 +43,9 @@ builder.Services.AddScoped(typeof(IItemRepository), typeof(ItemRepository));
 builder.Services.AddScoped(typeof(ITransactionHistoryService), typeof(TransactionHistoryService));
 builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(TransactionHistoryRepository));
 
+    //Warehouse
+builder.Services.AddScoped(typeof(IWarehouseService), typeof(WarehouseService));
+builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseRepository));
     //StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
