@@ -77,7 +77,7 @@ namespace QRStockMate.Controller
         }
 
         [HttpDelete]
-        public async Task<ActionResult<CompanyModel>> Delete([FromBody] CompanyModel model)
+        public async Task<IActionResult> Delete([FromBody] CompanyModel model)
         {
             try
             {
@@ -114,6 +114,24 @@ namespace QRStockMate.Controller
                 return BadRequest(ex.Message);//400
             }
         }
-        //obtener Almacenes -- Falta Santi
+
+        //Obtener Almacenes
+        [HttpPost("Warehouse")]
+        public async Task<ActionResult<IEnumerable<WarehouseModel>>> GetWarehouses([FromBody] Company company)
+        {
+            try
+            {
+                var warehouses = await _companyService.getWarehouses(company.Code);
+
+                if (warehouses is null) return NotFound();//404
+
+                return Ok(_mapper.Map<IEnumerable<Warehouse>, IEnumerable<WarehouseModel>>(warehouses)); //200
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);//400
+            }
+        }
     }
 }
