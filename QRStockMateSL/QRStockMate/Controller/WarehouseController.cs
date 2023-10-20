@@ -14,11 +14,13 @@ namespace QRStockMate.Controller
     public class WarehouseController : ControllerBase
     {
         private readonly IWarehouseService _warehouseService;
+        private readonly IStorageService _context_storage;
         private readonly IMapper _mapper;
 
-        public WarehouseController(IWarehouseService warehouseService, IMapper mapper)
+        public WarehouseController(IWarehouseService warehouseService, IMapper mapper, IStorageService context_storage)
         {
             _warehouseService = warehouseService;
+            _context_storage = context_storage;
             _mapper = mapper;
         }
 
@@ -78,7 +80,7 @@ namespace QRStockMate.Controller
                 return BadRequest(ex.Message);//400
             }
         }
-        /*
+        
         [HttpDelete]
         public async Task<IActionResult> Delete([FromBody] WarehouseModel model)
         {
@@ -99,6 +101,37 @@ namespace QRStockMate.Controller
                 return BadRequest(ex.Message);//400
             }
         }
-        */
+
+        [HttpPost("UpdateImage")]
+        public async Task<IActionResult> UpdateImage([FromForm] int warehouseId, [FromForm] IFormFile image)
+        {
+            try
+            {
+
+                var warehouse = await _warehouseService.GetById(warehouseId);
+                if (warehouse == null) return NotFound();
+
+                if (Uri.IsWellFormedUriString(warehouse.Url, UriKind.Absolute))
+                {
+                    // Es una URL válida, puedes proceder con la eliminación
+                    await _context_storage.DeleteImage(warehouse.Url);
+                }
+
+                Stream image_stream = image.OpenReadStream();
+                string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+
+                warehouse.Url = urlimagen;
+
+                await _warehouseService.Update(warehouse);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
+
