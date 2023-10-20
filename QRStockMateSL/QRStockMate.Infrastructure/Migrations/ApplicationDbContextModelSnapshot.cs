@@ -188,6 +188,13 @@ namespace QRStockMate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<< HEAD
+=======
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>> entornoAcoran
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");

@@ -14,5 +14,6 @@ namespace QRStockMate.AplicationCore.Entities
         public string Organization { get; set; }
         public int IdAdministrator { get; set; }
         public string IdArticles { get; set; }
+        public string Url { get; set; }
     }
 }
