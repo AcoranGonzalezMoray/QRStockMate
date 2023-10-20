@@ -6,12 +6,12 @@
 
         public string Name { get; set; }
 
-        public int warehouseId { get; set; }
+        public int WarehouseId { get; set; }
 
-        public string location { get; set; }
+        public string Location { get; set; }
 
-        public int stock { get; set; }
+        public int Stock { get; set; }
 
-        public string url { get; set; }
+        public string Url { get; set; }
     }
 }

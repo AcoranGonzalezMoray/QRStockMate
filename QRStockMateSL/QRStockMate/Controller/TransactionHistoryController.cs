@@ -53,6 +53,8 @@ namespace QRStockMate.Controller
             {
                 var th= _mapper.Map<TransactionHistoryModel, TransactionHistory>(value);
 
+                th.Created = DateTime.Now;
+
                 await _transactionHistoryService.Create(th);
 
                 return CreatedAtAction("Get", new { id = th.Id }, th);
@@ -70,6 +72,8 @@ namespace QRStockMate.Controller
             try
             {
                 var th = _mapper.Map<TransactionHistoryModel, TransactionHistory>(model);
+
+                th.Created = DateTime.Now;
 
                 if (th is null) return NotFound();//404
 

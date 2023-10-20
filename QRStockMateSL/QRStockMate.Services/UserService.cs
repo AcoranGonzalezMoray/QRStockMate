@@ -23,6 +23,12 @@ namespace QRStockMate.Services
         {
           return  await _userRepository.getCompany(code);
         }
+
+        public async Task<User> getDirectorByCode(string code)
+        {
+            return await _userRepository.getDirectorByCode(code);
+        }
+
         public async  Task<User> getUserByEmailPassword(string email, string password)
         {
           return await _userRepository.getUserByEmailPassword(email, password);
