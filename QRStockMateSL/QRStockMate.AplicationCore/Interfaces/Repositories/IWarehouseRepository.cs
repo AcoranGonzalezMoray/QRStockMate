@@ -9,7 +9,8 @@ namespace QRStockMate.AplicationCore.Interfaces.Repositories
 {
     public interface IWarehouseRepository: IBaseRepository<Warehouse>
     {
-        //public Task<IEnumerable<Item>> GetArticles(int Id);
+        public Task AddItem(int Id, Item Item);
+        public Task<IEnumerable<Item>> GetItems(int Id);
         public Task<User> GetAdministrator(int Id);
         public Task<String> GetLocation(int Id);
         public Task<String> GetOrganization(int Id);
