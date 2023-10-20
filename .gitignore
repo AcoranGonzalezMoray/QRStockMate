@@ -1,8 +1,8 @@
 
 *.suo
-QRStockMateSL/.vs/
-QRStockMateSL/QRStockMate.Infrastructure/bin/
-QRStockMateSL/QRStockMate.Infrastructure/obj/
-QRStockMateSL/QRStockMate.Services/obj/
-QRStockMateSL/QRStockMate/bin/
-QRStockMateSL/QRStockMate/obj/
+./QRStockMateSL/.vs/
+./QRStockMateSL/QRStockMate.Infrastructure/bin/
+./QRStockMateSL/QRStockMate.Infrastructure/obj/
+./QRStockMateSL/QRStockMate.Services/obj/
+./QRStockMateSL/QRStockMate/bin/
+./QRStockMateSL/QRStockMate/obj/
