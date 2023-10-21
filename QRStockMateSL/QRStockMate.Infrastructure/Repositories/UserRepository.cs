@@ -51,7 +51,11 @@ namespace QRStockMate.Infrastructure.Repositories
 
                 var items = await _context.Items.Where(w => idItemsList.Contains(w.Id)).ToListAsync();
 
+                //Lista de Transacciones
+                var transaction = await _context.TransactionsHistory.Where(w => w.Code==code).ToListAsync();
 
+                //Borrado de Transacciones
+                _context.TransactionsHistory.RemoveRange(transaction);
 
                 //Borrado de Articulos
                 _context.Items.RemoveRange(items);
