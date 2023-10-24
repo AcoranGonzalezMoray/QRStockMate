@@ -5,6 +5,7 @@ using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Model;
 using QRStockMate.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace QRStockMate.Controller
 {
@@ -193,9 +194,12 @@ namespace QRStockMate.Controller
         {
             try
             {
+                
                 var warehouse = await _warehouseService.GetById(Id);
 
                 if (warehouse == null) return NotFound();
+
+                if (String.IsNullOrEmpty(warehouse.IdItems)) return BadRequest("This warehouse don't have item yet.");
 
                 var Items = await _warehouseService.GetItems(warehouse.Id);
 
