@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "0Zu2TfM0i+4FDd5OKsY1iIHStguGIwY0BJ+qPKZm5mwy5ccRRQ8IAnMJQXEsbRr1QqaUAK0P7h0hUL0kwM9FWQ==",
+  "dgSpecHash": "TC5nGQ2qnrYcT7F4sdNxe8yhFMnYQR5VmBUExdP0ChSpp8ljmV5Nq1ysunljy99p18DbKbAw9j+fVojz/B2YxA==",
   "success": true,
   "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,7 @@
     "C:\\Users\\acora\\.nuget\\packages\\firebaseauthentication.net\\3.7.1\\firebaseauthentication.net.3.7.1.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\firebasestorage.net\\1.0.3\\firebasestorage.net.1.0.3.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\acora\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.13\\microsoft.aspnetcore.authentication.jwtbearer.7.0.13.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.11\\microsoft.aspnetcore.openapi.7.0.11.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

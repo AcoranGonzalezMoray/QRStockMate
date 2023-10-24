@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.Model;
 using QRStockMate.AplicationCore.Interfaces.Services;
-
+using QRStockMate.Utility;
+using QRStockMate.AplicationCore.Interfaces.Repositories;
 
 namespace QRStockMate.Controller
 {
@@ -12,20 +13,21 @@ namespace QRStockMate.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IJwtTokenRepository _jwtTokenUtility;
         private readonly IUserService _userService;
         private readonly ICompanyService _companyService;
         private readonly IStorageService _context_storage;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService,IStorageService storageService, IMapper mapper, ICompanyService companyService)
+        public UserController(IUserService userService,IStorageService storageService, IMapper mapper, ICompanyService companyService, IJwtTokenRepository jwtTokenUtility)
         {
             _userService = userService;
             _context_storage = storageService;
             _mapper = mapper;
             _companyService = companyService;
+            _jwtTokenUtility = jwtTokenUtility;
         }
 
         //FUNCIONES BASICAS
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> Get()
         {
@@ -118,13 +120,13 @@ namespace QRStockMate.Controller
             {
                 var user = await _userService.getUserByEmailPassword(email, Utility.Utility.EncriptarClave(password));
                 if (user == null) { return NotFound(); }//404
-                //var token = _context_jwt.GenToken(user.Email, user.Password);
+                var token = _jwtTokenUtility.GenToken(user.Email, user.Password);
 
 
                 var response = new
                 {
                     User = user,
-                    //Token = token
+                    Token = token
                 };
 
 

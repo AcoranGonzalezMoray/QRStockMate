@@ -85,3 +85,4 @@ C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7
 C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\QRStockMate.pdb
 C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\QRStockMate.genruntimeconfig.cache
 C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\obj\Debug\net7.0\ref\QRStockMate.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
