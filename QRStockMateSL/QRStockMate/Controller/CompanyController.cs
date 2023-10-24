@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Model;
@@ -96,12 +97,12 @@ namespace QRStockMate.Controller
             }
         }
 
-        //Obtener Empleados
         [HttpPost("Employees")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetEmployees([FromBody]Company company)
         {
             try
             {
+                
                 var users = await _companyService.getEmployees(company.Code);
 
                 if (users is null) return NotFound();//404
@@ -115,16 +116,16 @@ namespace QRStockMate.Controller
             }
         }
 
-        //Obtener Almacenes
         [HttpPost("Warehouse")]
         public async Task<ActionResult<IEnumerable<WarehouseModel>>> GetWarehouses([FromBody] Company company)
         {
             try
             {
+                if (String.IsNullOrEmpty(company.WarehouseId)) return BadRequest("This company don't have Warehouse yet.");
                 var warehouses = await _companyService.getWarehouses(company.Code);
 
                 if (warehouses is null) return NotFound();//404
-
+                
                 return Ok(_mapper.Map<IEnumerable<Warehouse>, IEnumerable<WarehouseModel>>(warehouses)); //200
             }
             catch (Exception ex)
