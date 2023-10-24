@@ -1,16 +1,29 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Infrastructure.Data;
 using QRStockMate.Infrastructure.Repositories;
 using QRStockMate.Services;
+using QRStockMate.Utility;
 using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// Se le agrega la seguridad a los controladores para que se le envie el token valido
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,6 +59,7 @@ builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(Transac
     //Warehouse
 builder.Services.AddScoped(typeof(IWarehouseService), typeof(WarehouseService));
 builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseRepository));
+
     //StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
@@ -53,6 +67,8 @@ builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository)
     //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
+    //JWT
+builder.Services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
 
 //CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -66,6 +82,22 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod();
                       });
 });
+
+
+//Json Web Token (JWT)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["ConfigJwt:Key"] ?? string.Empty)
+            )
+        };
+    });
 
 var app = builder.Build();
 
