@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Auth.Login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,18 +30,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.qrstockmateapp.R
-import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
+import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.services.ApiService
+import com.example.qrstockmateapp.api.services.RetrofitInstance
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun Login(navController: NavHostController, onLoginSuccess: (Boolean) -> Unit) {
+fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, String) -> Unit) {
     //onLoginSuccess: (Boolean) -> Unit
     // Aquí podrías definir los estados de los campos del formulario de inicio de sesión
     var email by remember { mutableStateOf("") }
@@ -54,17 +55,34 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean) -> Unit) {
         unfocusedBorderColor = Color.Black,
         backgroundColor = Color.LightGray
     )
-    // Evento al presionar el botón de inicio de sesión
+
     val onLoginClicked: () -> Unit = {
-        // Aquí iría la lógica de autenticación, como verificar las credenciales
-        // Puedes hacer llamadas a tu ViewModel para autenticar al usuario con los datos ingresados
-
-        // Por ejemplo, aquí simulamos un inicio de sesión exitoso si se ingresa "email" y "password"
-        val isLoginSuccessful = email == "email" && password == "password"
-
-        // Devolver el resultado al callback proporcionado
-        onLoginSuccess(isLoginSuccessful)
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = RetrofitInstance.api.signIn(email, password)
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    if (loginResponse != null) {
+                        val user = loginResponse.user
+                        val token = loginResponse.token
+                        // Hacer lo que necesites con el usuario y el token
+                        onLoginSuccess(true, user, token)
+                    } else {
+                        Log.d("errorUser", "error es null")
+                    }
+                } else {
+                    // Manejar la respuesta de error (códigos de estado diferentes de 200)
+                    Log.d("errorCode", "Código de error: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.d("excepcionUser","${e}")
+            }
+        }
     }
+
+
+
+
 
     Column(
         modifier = Modifier

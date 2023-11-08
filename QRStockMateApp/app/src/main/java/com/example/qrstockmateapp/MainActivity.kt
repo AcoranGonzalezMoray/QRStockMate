@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,9 @@ import com.example.qrstockmateapp.navigation.view.BottomNavigationScreen
 import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.ui.theme.QRStockMateAppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +47,15 @@ fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "login") {
         // Pantallas de Autenticacion
         composable("login") {
-            Login(navController = navController) { loggedIn ->
+            Login(navController = navController) { loggedIn,user,token ->
                 if (loggedIn) {
-                    navController.navigate("bottomScreen")
+                    Log.d("UserDetails", "User: $user") // Imprime los detalles del usuario en Logcat
+                    Log.d("UserDetails", "Token: $token") // Imprime los detalles del usuario en Logcat
+
+                    // Ejecutar la navegación en el hilo principal
+                    CoroutineScope(Dispatchers.Main).launch {
+                        navController.navigate("bottomScreen")
+                    }
                 }
             }
         }
