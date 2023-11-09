@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
@@ -29,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
+import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.widget.BottomBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -38,7 +42,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationScreen() {
+fun BottomNavigationScreen(navControllerLogin: NavController) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
 
@@ -54,7 +58,7 @@ fun BottomNavigationScreen() {
                 item = ScreenModel().screensInHomeFromBottomNav,
 
                 navController = navController,
-
+                navControllerLogin = navControllerLogin,
                 scope = scope,
                 scaffoldState = scaffoldState
 
@@ -107,6 +111,7 @@ fun Drawer(
     item: List<ScreenModel.HomeScreens>,
 
     navController: NavController,
+    navControllerLogin: NavController,
     scaffoldState: ScaffoldState,
     scope: CoroutineScope
 ) {
@@ -122,18 +127,20 @@ fun Drawer(
                 .padding(10.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().background(Color.Black) ,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black) ,
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Filled.AccountBox,
                     contentDescription = "",
-                    tint = Color.Red,
+                    tint = Color.White,
                     modifier = Modifier.height(40.dp)
                 )
                 Spacer(modifier = Modifier.width(7.dp))
-                Text("Nombre de la Empresa", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
+                Text("${DataRepository.getCompany()?.name}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
             }
         }
 
@@ -169,25 +176,97 @@ fun Drawer(
 
 
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "About",
 
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            if(DataRepository.getUser()?.role==0) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = {
+                            navController.navigate("addWarehouse")
+                            scope.launch { scaffoldState.drawerState.close() }
 
-        Spacer(modifier = Modifier.height(30.dp))
+                        })
+                        .height(45.dp)
+
+                        .padding(start = 10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "",
+                        tint = Color.Green
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = "Add New Warehouse",
+                        fontSize = 18.sp,
+                        color = Color.Green
+                    )
+
+                }
+            }
+            if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = {
+                            //navController.navigate("")
+                            scope.launch { scaffoldState.drawerState.close() }
+
+                        })
+                        .height(45.dp)
+
+                        .padding(start = 10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "",
+                        tint = Color.Yellow
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = "Manage User",
+                        fontSize = 18.sp,
+                        color = Color.Yellow
+                    )
+
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = {
+                        DataRepository.LogOut()
+                        navControllerLogin.navigate("login")
+                        scope.launch { scaffoldState.drawerState.close() }
+
+                    })
+                    .height(45.dp)
+
+                    .padding(start = 10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ExitToApp,
+                    contentDescription = "",
+                    tint = Color.Red
+                )
+                Spacer(modifier = Modifier.width(7.dp))
+                Text(
+                    text = "Log Out",
+                    fontSize = 18.sp,
+                    color = Color.Red
+                )
+
+            }
+        }
+
     }
 
 
-}
-
-@Preview
-@Composable
-fun PreviewMainScreen() {
-    BottomNavigationScreen()
 }

@@ -1,4 +1,4 @@
-package com.example.qrstockmateapp.screens.ScanQR
+package com.example.qrstockmateapp.screens.TransactionHistory
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun ScanScreen(navController: NavController) {
+fun TransactionHistoryScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -26,7 +26,7 @@ fun ScanScreen(navController: NavController) {
     {
 
         Text(
-            text = "Scan screen", modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = "History screen", modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,

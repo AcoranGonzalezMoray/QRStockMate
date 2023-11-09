@@ -65,6 +65,9 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     if (loginResponse != null) {
                         val user = loginResponse.user
                         val token = loginResponse.token
+
+                        RetrofitInstance.updateToken(token) // Aquí se actualiza el token de autorización
+
                         // Hacer lo que necesites con el usuario y el token
                         onLoginSuccess(true, user, token)
                     } else {
@@ -142,7 +145,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 color = Color.Blue,
                 modifier = Modifier
                     .clickable {
-
+                        navController.navigate(route = "joinWithCode")
                     }
                     .padding(5.dp)
             )

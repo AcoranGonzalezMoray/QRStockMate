@@ -8,6 +8,7 @@ data class User(
     val phone: String,
     val code: String,
     val url: String,
-    val role: String,
+    val role: Int,
 
 )
+
