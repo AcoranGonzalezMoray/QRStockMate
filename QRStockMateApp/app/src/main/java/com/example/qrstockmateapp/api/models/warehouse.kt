@@ -6,7 +6,7 @@ data class Warehouse(
     val name:String,
     val location:String,
     val organization:String,
-    val idAdminitrator:Int,
+    val idAdministrator:Int,
     val idItems:String,
     val url:String
 )

@@ -1,34 +1,114 @@
 package com.example.qrstockmateapp.screens.Home
 
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
+import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     val user = remember { DataRepository.getUser() }
+    var isloading by remember { mutableStateOf(false) }
+    var warehouses  by remember { mutableStateOf(emptyList<Warehouse>()) }
+
+    val loadWarehouse:()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            isloading = true
+            val user = DataRepository.getUser()
+            if(user!=null){
+                val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
+                if (companyResponse.isSuccessful) {
+                    val company = companyResponse.body()
+                    if(company!=null){
+                        DataRepository.setCompany(company)
+                        val employeesResponse = RetrofitInstance.api.getEmployees(company)
+                        val warehouseResponse = RetrofitInstance.api.getWarehouse(company)
+
+                        if (warehouseResponse.isSuccessful){
+                            val warehousesIO = warehouseResponse.body()
+                            Log.d("Warehouse", "SI")
+                            if(warehousesIO!=null ){
+                                Log.d("Warehouse", "${warehousesIO}")
+                                DataRepository.setWarehouses(warehousesIO)
+                                warehouses = warehousesIO
+                            }
+                        }else Log.d("Warehouse", "NO")
+
+                        if (employeesResponse.isSuccessful ){
+                            val employees = employeesResponse.body()
+                            if(employees!=null) DataRepository.setEmployees(employees)
+
+                        }
+
+                    }
+                } else Log.d("compnayError", "error")
+
+
+            }
+
+            delay(1100)
+            isloading = false
+        }
+    }
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isloading,
+        onRefresh = loadWarehouse
+    )
 
     if(user !=null){
         LaunchedEffect(Unit) {
@@ -36,35 +116,54 @@ fun HomeScreen(navController: NavController) {
             if(company!=null){
                 val warehouseResponse = RetrofitInstance.api.getWarehouse(company)
                 if (warehouseResponse.isSuccessful){
-                    val warehouses = warehouseResponse.body()
-                    Log.d("Warehouse", "${warehouses}")
-                    if(warehouses!=null )DataRepository.setWarehouses(warehouses)
+                    val warehousesIO = warehouseResponse.body()
+                    Log.d("Warehouse", "SI")
+                    if(warehousesIO!=null ){
+                        Log.d("Warehouse", "${warehousesIO}")
+                        DataRepository.setWarehouses(warehousesIO)
+                        warehouses = warehousesIO
+                    }
+                }else{
+                    try {
+                        val errorBody = warehouseResponse.errorBody()?.string()
+                        Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
+                    } catch (e: Exception) {
+                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                    }
                 }
             }
         }
     }
 
-    val warehouses = remember { DataRepository.getWarehouses() }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Home screen",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
+    Box(
+        modifier = Modifier
+            .pullRefresh(pullRefreshState)
+    ){
+        PullRefreshIndicator(
+            refreshing = isloading,
+            state = pullRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(1f),
+            backgroundColor =  Color.White,
         )
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
 
-        // Mostrar la lista de almacenes
-        if (warehouses != null) {
-            WarehouseList(warehouses)
-        }else{
-            Text(text = "There are no warehouses available for this company")
+            // Mostrar la lista de almacenes
+            if (warehouses.isNotEmpty()) {
+                WarehouseList(warehouses)
+            }else{
+                Box {
+                    Text(text = "There are no warehouses available for this company")
+                }
+            }
         }
     }
+
 }
 
 @Composable
@@ -72,21 +171,107 @@ fun WarehouseList(warehouses: List<Warehouse>) {
     LazyColumn {
         items(warehouses) { warehouse ->
             WarehouseItem(warehouse)
+            Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
     }
 }
 
 @Composable
 fun WarehouseItem(warehouse: Warehouse) {
-    // Muestra los detalles del almacén
-    Column(
+    // Muestra los detalles del almacén dentro de un Card
+    Box(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(8.dp)
+            )
             .padding(16.dp)
+            .background(Color.White),
+        contentAlignment = Alignment.Center
     ) {
-        Text(text = "Name: ${warehouse.name}")
-        Text(text = "URL: ${warehouse.url}")
-        Text(text = "Location: ${warehouse.location}")
-        // Otros detalles del almacén
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            val placeholderImage = painterResource(id = R.drawable.warehouse)
+            if (warehouse.url.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .shadow(
+                            elevation = 5.dp,
+                        )
+                        .padding(16.dp)
+                ){
+                    Image(
+                        painter = placeholderImage,
+                        contentDescription = "Default User Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            } else {
+                // Si hay una URL válida, cargar la imagen usando Coil
+                val painter = rememberImagePainter(
+                    data = warehouse.url,
+                    builder = {
+                        crossfade(true)
+                        placeholder(R.drawable.user)
+                    }
+                )
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .shadow(
+                            elevation = 5.dp,
+                        )
+                        .padding(16.dp)
+                ){
+                    Image(
+                        painter = painter,
+                        contentDescription = "warehouse Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+            Column {
+                // Nombre del almacén
+                Text(
+                    text = warehouse.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Ubicación del almacén
+                Text(
+                    text = "Location: ${warehouse.location}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                // Organización del almacén
+                Text(
+                    text = "Organization: ${warehouse.organization}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                //Administrador
+                Text(
+                    text = "Organization: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+        }
     }
 }

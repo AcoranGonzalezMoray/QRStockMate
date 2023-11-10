@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.screens.Auth.Login
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,14 +42,25 @@ import com.example.qrstockmateapp.api.services.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, String) -> Unit) {
-    //onLoginSuccess: (Boolean) -> Unit
-    // Aquí podrías definir los estados de los campos del formulario de inicio de sesión
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val isError = email.isBlank() || password.isBlank()
+    val errorMessage = if (isError) {
+        val emptyField = listOf(
+            "Email" to email,
+            "Password" to password
+        ).firstOrNull { it.second.isBlank() }
+
+        "${emptyField?.first ?: ""} is required"
+    } else null
+
+
+    val context = LocalContext.current
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         cursorColor = Color.Black,
@@ -65,16 +79,28 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     if (loginResponse != null) {
                         val user = loginResponse.user
                         val token = loginResponse.token
-
-                        RetrofitInstance.updateToken(token) // Aquí se actualiza el token de autorización
-
-                        // Hacer lo que necesites con el usuario y el token
+                        RetrofitInstance.updateToken(token)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Successful Login", Toast.LENGTH_SHORT).show()
+                        }
                         onLoginSuccess(true, user, token)
                     } else {
-                        Log.d("errorUser", "error es null")
+                        try {
+                            val errorBody = response.errorBody()?.string()
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "$errorBody", Toast.LENGTH_SHORT).show()
+                            }
+                            Log.d("excepcionUserB", errorBody ?: "Error body is null")
+                        } catch (e: Exception) {
+                            Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                        }
                     }
                 } else {
-                    // Manejar la respuesta de error (códigos de estado diferentes de 200)
+                    withContext(Dispatchers.Main) {
+                        if(response.code() == 400) Toast.makeText(context, "Error the format of the fields are not correct", Toast.LENGTH_SHORT).show()
+                        if(response.code() == 404) Toast.makeText(context, "The username or password is not correct", Toast.LENGTH_SHORT).show()
+                    }
+
                     Log.d("errorCode", "Código de error: ${response.code()}")
                 }
             } catch (e: Exception) {
@@ -102,9 +128,17 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 .height(300.dp)
             )
         Spacer(modifier = Modifier.height(20.dp))
-
+        if (isError) {
+            Text(
+                text = errorMessage ?: "",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
         TextField(
             value = email,
+            isError = isError,
             onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
@@ -113,6 +147,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
             value = password,
+            isError = isError,
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
@@ -154,7 +189,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 color = Color.Blue,
                 modifier = Modifier
                     .clickable {
-
+                        navController.navigate(route = "signUp")
                     }
                     .padding(5.dp)
             )

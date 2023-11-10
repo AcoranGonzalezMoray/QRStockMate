@@ -16,6 +16,7 @@ import com.example.qrstockmateapp.navigation.view.BottomNavigationScreen
 import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
+import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,6 +62,10 @@ fun Navigation(navController: NavHostController) {
             JoinWithCodeScreen(navController = navController)
         }
 
+        composable("signUp"){
+            SignUpScreen(navController = navController)
+        }
+
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
             BottomNavigationScreen(navController)
@@ -78,16 +83,16 @@ suspend fun Initializaton(user: User, token:String){
         if(company!=null)DataRepository.setCompany(company)
     } else Log.d("compnayError", "error")
 
-    if(user.role==0||user.role==1){
-        val company = DataRepository.getCompany()
-        if(company!=null){
-            val employeesResponse = RetrofitInstance.api.getEmployees(company)
-            if (employeesResponse.isSuccessful) {
-                val employees = employeesResponse.body()
-                Log.d("EMPLOYEE", "${employees}")
-                if(employees!=null)DataRepository.setEmployees(employees)
-            } else Log.d("compnayError", "error")
-        }
+
+    val company = DataRepository.getCompany()
+    if(company!=null){
+        val employeesResponse = RetrofitInstance.api.getEmployees(company)
+        if (employeesResponse.isSuccessful) {
+            val employees = employeesResponse.body()
+            Log.d("EMPLOYEE", "${employees}")
+            if(employees!=null)DataRepository.setEmployees(employees)
+        } else Log.d("compnayError", "error")
     }
+
 }
 

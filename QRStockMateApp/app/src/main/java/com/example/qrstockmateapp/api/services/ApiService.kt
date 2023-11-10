@@ -9,6 +9,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
     @FormUrlEncoded
@@ -34,9 +35,16 @@ interface ApiService {
     ): Response<List<User>>
 
     @POST("User/SignUp")
-    suspend fun joinWithCode(
+    suspend fun signUp(
         @Body registrationBody: RegistrationBody
     ): Response<voidResponse>
+
+    @POST("Warehouse/{id}")
+    suspend fun createWarehouse(
+        @Path("id") id: Int,
+        @Body warehouse: Warehouse
+    ): Response<voidResponse>
+
 }
 
 

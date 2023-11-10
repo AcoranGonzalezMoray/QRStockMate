@@ -12,3 +12,12 @@ data class User(
 
 )
 
+fun userRoleToString(roleId: Int): String {
+    return when (roleId) {
+        0 -> "Director"
+        1 -> "Administrator"
+        2 -> "Inventory Technician"
+        3 -> "User"
+        else -> "Unknown Role"
+    }
+}

@@ -215,7 +215,7 @@ fun Drawer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = {
-                            //navController.navigate("")
+                            navController.navigate("manageUser")
                             scope.launch { scaffoldState.drawerState.close() }
 
                         })

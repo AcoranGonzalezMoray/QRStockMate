@@ -38,9 +38,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.models.Warehouse
+import com.example.qrstockmateapp.api.services.RegistrationBody
+import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -48,7 +55,6 @@ fun AddWarehouseScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
 
-    var schedule by remember { mutableStateOf("") }
     var organization by remember { mutableStateOf("") }
 
     var selectedOption by remember { mutableStateOf("Selected an existing administrator to associate with the warehouse") }
@@ -63,11 +69,49 @@ fun AddWarehouseScreen(navController: NavController) {
         unfocusedBorderColor = Color.Black,
         backgroundColor = Color.LightGray
     )
+
+    val addWarehouse:() -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val company = DataRepository.getCompany()
+                if(company!=null){
+                    Log.d("selected","${selectedOption.split(";")[1].toInt()}")
+                    val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","")
+                    val response = RetrofitInstance.api.createWarehouse(company.id,warehouse)
+                    if(response.isSuccessful){
+                      withContext(Dispatchers.Main){
+                          navController.navigate("home")
+                      }
+                    }else{
+                        Log.d("AddWAREHOUSE", "NO")
+                    }
+
+                }
+            }catch (e: Exception){
+                Log.d("ExceptionAddWarehouse", "${e}")
+            }
+        }
+    }
+
+
+
+
     // Cargar la lista de empleados al inicializar
     LaunchedEffect(Unit) {
-        val users = DataRepository.getEmployees()
-        Log.d("EmployeesAdd", "${users}")
-        employees = users?.filter { it.role == 1 } ?: emptyList()
+        GlobalScope.launch(Dispatchers.IO) {
+            val company = DataRepository.getCompany()
+            if(company!=null){
+                val employeesResponse = RetrofitInstance.api.getEmployees(company)
+                if (employeesResponse.isSuccessful) {
+                    val employeesIO = employeesResponse.body()
+                    Log.d("EMPLOYEE", "SI")
+                    if(employeesIO!=null){
+                        DataRepository.setEmployees(employeesIO)
+                        employees = DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList()
+                    }
+                } else Log.d("compnayError", "error")
+            }
+        }
 
     }
     Column(
@@ -131,7 +175,8 @@ fun AddWarehouseScreen(navController: NavController) {
             ) {
                 employees.forEach { employee ->
                     DropdownMenuItem(onClick = {
-                        selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code}"
+                        selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
+                        Log.d("selected","${selectedOption.split(";")[1].toInt()}")
                         isMenuExpanded = false
                     }) {
                         Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}" )
@@ -141,16 +186,7 @@ fun AddWarehouseScreen(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        // Campo de entrada para el horario
-        TextField(
-            value = schedule,
-            onValueChange = { schedule = it },
-            label = { Text("Schedule") },
-            colors = customTextFieldColors,
-            modifier = Modifier.fillMaxWidth(),
-        )
 
-        Spacer(modifier = Modifier.height(10.dp))
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -165,7 +201,7 @@ fun AddWarehouseScreen(navController: NavController) {
             }
 
             Button(
-                onClick = { /* Lógica del botón Add */ },
+                onClick = { addWarehouse()},
                 colors = ButtonDefaults.buttonColors(Color.Black),
                 modifier = Modifier
                     .weight(1f)

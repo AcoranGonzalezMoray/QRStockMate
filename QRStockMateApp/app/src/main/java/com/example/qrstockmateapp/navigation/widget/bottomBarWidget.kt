@@ -36,12 +36,12 @@ fun BottomBar(
             val selected = currentRoute == screens.route
 
             BottomNavigationItem(
-                modifier = Modifier.background(Color.White),
+                modifier = Modifier.background(Color.Black),
                 icon = {
                     Icon(
                         imageVector = screens.icon,
                         contentDescription = "",
-                        tint = if (selected) Color.Blue else Color.Black,
+                        tint = if (selected) Color.White else Color.DarkGray,
                         modifier = Modifier
                             .size(25.dp)
                             .align(Alignment.CenterVertically) // Centro vertical
@@ -53,7 +53,7 @@ fun BottomBar(
                     Text(
                         if (selected && screens.route != "scan") screens.title else "", // Label
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.Blue
+                        color = Color.White
                     )
                 },
 
