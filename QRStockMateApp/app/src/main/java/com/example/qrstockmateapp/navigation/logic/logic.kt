@@ -12,6 +12,7 @@ import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
 import com.example.qrstockmateapp.screens.Home.ManageUser.ManageUserScreen
+import com.example.qrstockmateapp.screens.Home.UpdateWarehouse.UpdateWarehouseScreen
 import com.example.qrstockmateapp.screens.Profile.ProfileScreen
 import com.example.qrstockmateapp.screens.ScanQR.ScanScreen
 import com.example.qrstockmateapp.screens.Search.SearchScreen
@@ -45,6 +46,9 @@ fun Navigation(navController: NavHostController) {
         }
         composable("manageUser") {
             ManageUserScreen(navController)
+        }
+        composable("updateWarehouse"){
+            UpdateWarehouseScreen(navController)
         }
     }
 }

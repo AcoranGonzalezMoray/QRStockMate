@@ -1,12 +1,14 @@
 package com.example.qrstockmateapp.navigation.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,12 +34,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.widget.BottomBar
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -45,7 +51,6 @@ import kotlinx.coroutines.launch
 fun BottomNavigationScreen(navControllerLogin: NavController) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
-
 
     val navController = rememberNavController()
     Scaffold(
@@ -115,7 +120,31 @@ fun Drawer(
     scaffoldState: ScaffoldState,
     scope: CoroutineScope
 ) {
+    val deleteAccount:()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            var user =DataRepository.getUser()
+            if(user!=null){
+                try {
+                    val response = RetrofitInstance.api.deleteAccount(user)
+                    if (response.isSuccessful){
+                        withContext(Dispatchers.Main){
+                            navControllerLogin.navigate("login")
+                        }
+                    }else{
+                        try {
+                            val errorBody = response.errorBody()?.string()
+                            Log.d("excepcionUserB", errorBody ?: "Error body is null")
+                        } catch (e: Exception) {
+                            Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                        }
+                    }
+                }catch (e: Exception) {
+                    Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                }
+            }
 
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -264,7 +293,25 @@ fun Drawer(
                 )
 
             }
+            if(DataRepository.getUser()?.role==0) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Button(
+                        onClick = {deleteAccount()},
+                        colors = ButtonDefaults.buttonColors(Color.Red),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
+                    ) {
+                        Text(text = "Delete Account")
+                    }
+                }
+            }
         }
+
 
     }
 

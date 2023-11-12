@@ -19,9 +19,16 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -112,23 +119,26 @@ fun HomeScreen(navController: NavController) {
 
     if(user !=null){
         LaunchedEffect(Unit) {
-            val company = DataRepository.getCompany()
-            if(company!=null){
-                val warehouseResponse = RetrofitInstance.api.getWarehouse(company)
-                if (warehouseResponse.isSuccessful){
-                    val warehousesIO = warehouseResponse.body()
-                    Log.d("Warehouse", "SI")
-                    if(warehousesIO!=null ){
-                        Log.d("Warehouse", "${warehousesIO}")
-                        DataRepository.setWarehouses(warehousesIO)
-                        warehouses = warehousesIO
-                    }
-                }else{
-                    try {
-                        val errorBody = warehouseResponse.errorBody()?.string()
-                        Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
-                    } catch (e: Exception) {
-                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+            val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
+            if (companyResponse.isSuccessful) {
+                val company = companyResponse.body()
+                if(company!=null){
+                    val warehouseResponse = RetrofitInstance.api.getWarehouse(company)
+                    if (warehouseResponse.isSuccessful){
+                        val warehousesIO = warehouseResponse.body()
+                        Log.d("Warehouse", "SI")
+                        if(warehousesIO!=null ){
+                            Log.d("Warehouse", "${warehousesIO}")
+                            DataRepository.setWarehouses(warehousesIO)
+                            warehouses = warehousesIO
+                        }
+                    }else{
+                        try {
+                            val errorBody = warehouseResponse.errorBody()?.string()
+                            Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
+                        } catch (e: Exception) {
+                            Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                        }
                     }
                 }
             }
@@ -155,7 +165,7 @@ fun HomeScreen(navController: NavController) {
 
             // Mostrar la lista de almacenes
             if (warehouses.isNotEmpty()) {
-                WarehouseList(warehouses)
+                WarehouseList(warehouses,navController)
             }else{
                 Box {
                     Text(text = "There are no warehouses available for this company")
@@ -167,17 +177,17 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun WarehouseList(warehouses: List<Warehouse>) {
+fun WarehouseList(warehouses: List<Warehouse>,navController: NavController) {
     LazyColumn {
         items(warehouses) { warehouse ->
-            WarehouseItem(warehouse)
+            WarehouseItem(warehouse,navController)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
     }
 }
 
 @Composable
-fun WarehouseItem(warehouse: Warehouse) {
+fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
     // Muestra los detalles del almacén dentro de un Card
     Box(
         modifier = Modifier
@@ -270,6 +280,40 @@ fun WarehouseItem(warehouse: Warehouse) {
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
+                Row {
+                    Button(
+                        onClick = {
+                            DataRepository.setWarehousePlus(warehouse)
+                            navController.navigate("updateWarehouse")
+                        },
+                        colors = ButtonDefaults.buttonColors(Color.Yellow),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(end = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Create,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                    Button(
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(Color.Red),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f) // Este botón también ocupa la mitad del espacio
+                            .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                }
+
             }
 
         }

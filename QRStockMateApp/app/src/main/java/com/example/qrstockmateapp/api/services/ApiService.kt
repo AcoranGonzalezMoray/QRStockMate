@@ -5,10 +5,13 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
@@ -44,6 +47,15 @@ interface ApiService {
         @Path("id") id: Int,
         @Body warehouse: Warehouse
     ): Response<voidResponse>
+    @PUT("Warehouse/")
+    suspend fun updateWarehouse(
+        @Body warehouse: Warehouse
+    ): Response<voidResponse>
+
+    @HTTP(method = "DELETE", path = "/User/DeleteAccount", hasBody = true) //Para un Delete con Body hay que hacerlo asi
+    suspend fun deleteAccount(
+        @Body user: User
+    ): Response<Unit>
 
 }
 

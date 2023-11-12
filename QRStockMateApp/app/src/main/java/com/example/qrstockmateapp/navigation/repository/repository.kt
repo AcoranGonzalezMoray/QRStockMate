@@ -10,6 +10,22 @@ object DataRepository {
     private var warehouses: List<Warehouse>? = null
     private var employees: List<User>? = null
     private var token: String = ""
+    //Pasar warehouse de una pantalla a otra
+    private var warehousePlus: Warehouse? = null
+
+
+
+
+    fun setWarehousePlus(newWarehouse: Warehouse){
+        warehousePlus = newWarehouse
+    }
+
+    fun getWarehousePlus():Warehouse?{
+        return warehousePlus
+    }
+
+
+
 
     fun setEmployees(newEmployees: List<User>) {
         employees= newEmployees
