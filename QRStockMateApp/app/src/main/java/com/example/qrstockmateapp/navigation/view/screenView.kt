@@ -169,7 +169,7 @@ fun Drawer(
                     modifier = Modifier.height(40.dp)
                 )
                 Spacer(modifier = Modifier.width(7.dp))
-                Text("${DataRepository.getCompany()?.name}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
+                Text("${DataRepository.getCompany()?.name} \n Code: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
             }
         }
 
