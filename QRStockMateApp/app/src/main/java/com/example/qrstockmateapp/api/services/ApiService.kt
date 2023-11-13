@@ -1,8 +1,11 @@
 package com.example.qrstockmateapp.api.services
 
 import com.example.qrstockmateapp.api.models.Company
+import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -10,8 +13,10 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.HTTP
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -51,12 +56,34 @@ interface ApiService {
     suspend fun updateWarehouse(
         @Body warehouse: Warehouse
     ): Response<voidResponse>
+    @PUT("User/")
+    suspend fun updateUser(
+        @Body user: User
+    ): Response<voidResponse>
 
     @HTTP(method = "DELETE", path = "/User/DeleteAccount", hasBody = true) //Para un Delete con Body hay que hacerlo asi
     suspend fun deleteAccount(
         @Body user: User
     ): Response<Unit>
 
+    @GET("Warehouse/GetItems/{id}")
+    suspend fun getItems(
+        @Path("id") id: Int,
+    ): Response<List<Item>>
+
+    @Multipart
+    @POST("Warehouse/UpdateImage")
+    suspend fun updateImageWarehouse(
+        @Part("warehouseId") warehouseId: RequestBody,
+        @Part image: MultipartBody.Part
+    ):Response<Void>
+
+    @Multipart
+    @POST("User/UpdateImage")
+    suspend fun updateImageUser(
+        @Part("userId") userId: RequestBody,
+        @Part image: MultipartBody.Part
+    ):Response<Void>
 }
 
 

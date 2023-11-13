@@ -8,5 +8,5 @@ data class Warehouse(
     var organization:String,
     var idAdministrator:Int,
     val idItems:String,
-    val url:String
+    var url:String
 )

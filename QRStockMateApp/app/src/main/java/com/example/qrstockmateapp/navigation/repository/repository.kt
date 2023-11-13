@@ -12,10 +12,16 @@ object DataRepository {
     private var token: String = ""
     //Pasar warehouse de una pantalla a otra
     private var warehousePlus: Warehouse? = null
+    private var userPlus: User? = null
 
 
+    fun setUserPlus(newUser: User){
+        userPlus = newUser
+    }
 
-
+    fun getUserPlus():User?{
+        return userPlus
+    }
     fun setWarehousePlus(newWarehouse: Warehouse){
         warehousePlus = newWarehouse
     }

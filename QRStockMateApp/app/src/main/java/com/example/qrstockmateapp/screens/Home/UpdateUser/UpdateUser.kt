@@ -1,5 +1,4 @@
-package com.example.qrstockmateapp.screens.Home.UpdateWarehouse
-
+package com.example.qrstockmateapp.screens.Home.UpdateUser
 
 import android.net.Uri
 import android.util.Log
@@ -47,6 +46,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import kotlinx.coroutines.Dispatchers
@@ -60,9 +60,9 @@ import okhttp3.RequestBody
 import java.io.File
 
 @Composable
-fun UpdateWarehouseScreen(navController: NavController) {
-    var warehouse = remember { DataRepository.getWarehousePlus() }
-    var selectedOption by remember { mutableStateOf("Selected an existing administrator to associate with the warehouse") }
+fun UpdateUserScreen(navController: NavController) {
+    var user = remember { DataRepository.getUserPlus() }
+    var selectedOption by remember { mutableStateOf("Select a role") }
     var isloading by remember { mutableStateOf<Boolean>(false) }
 
     val context = LocalContext.current
@@ -71,17 +71,17 @@ fun UpdateWarehouseScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO){
             try {
                 isloading = true
-                val warehouseId = warehouse?.id
-                val warehouseIdRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), warehouseId.toString())
+                val userId = user?.id
+                val userIdRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
 
                 // Crea RequestBody y MultipartBody.Part con el archivo de imagen seleccionado
                 val imageRequestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
                 val imagePart = MultipartBody.Part.createFormData("image", file.name, imageRequestBody)
 
-                val imageResponse =  RetrofitInstance.api.updateImageWarehouse(warehouseIdRequestBody, imagePart)
+                val imageResponse =  RetrofitInstance.api.updateImageUser(userIdRequestBody, imagePart)
                 if(imageResponse.isSuccessful){
                     withContext(Dispatchers.Main){
-                        navController.navigate("home")
+                        navController.navigate("manageUser")
                     }
 
                 }else{
@@ -130,10 +130,10 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
 
     var isMenuExpanded by remember { mutableStateOf(false) }
-    var employees = remember { DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList() }
+    var roles = remember { mutableListOf(0, 1, 2, 3) }
 
     LaunchedEffect(Unit){
-        if(employees!=null && warehouse!=null)selectedOption= "Name: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.name}  Role: Administrator Code: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.code};${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.id}"
+        if(roles!=null && user!=null)selectedOption= "Role:${ userRoleToString(user.role)}"
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
@@ -145,17 +145,17 @@ fun UpdateWarehouseScreen(navController: NavController) {
     )
 
 
-    val updateWarehouse : () -> Unit = {
+    val updateUser : () -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                if(warehouse!=null){
-                    Log.d("excepcionWarehouseCambio","${warehouse}")
-                    val response =  RetrofitInstance.api.updateWarehouse(warehouse)
+                if(user!=null){
+                    Log.d("excepcionWarehouseCambio","${user}")
+                    val response =  RetrofitInstance.api.updateUser(user)
 
                     if (response.isSuccessful) {
                         val wResponse = response.body()
                         withContext(Dispatchers.Main){
-                            navController.navigate("home")
+                            navController.navigate("manageUser")
                         }
                     }else{
                     }
@@ -191,9 +191,9 @@ fun UpdateWarehouseScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if(warehouse!=null && !warehouse.url.isNullOrBlank()){
+                if(user!=null && !user.url.isNullOrBlank()){
                     val painter = rememberImagePainter(
-                        data = warehouse.url,
+                        data = user.url,
                         builder = {
                             crossfade(true)
                             placeholder(R.drawable.loading)
@@ -208,7 +208,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     )
                 }else{
                     Image(
-                        painter = painterResource(id = R.drawable.warehouse), // Reemplaza con tu lógica para cargar la imagen
+                        painter = painterResource(id = R.drawable.user), // Reemplaza con tu lógica para cargar la imagen
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -236,11 +236,11 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                warehouse?.let {
+                user?.let {
                     var name by remember { mutableStateOf(it.name) }
-                    var location by remember { mutableStateOf(it.location) }
-                    var organization by remember { mutableStateOf(it.organization) }
-                    var administratorId by remember { mutableStateOf(it.idAdministrator) }
+                    var email by remember { mutableStateOf(it.email) }
+                    var phone by remember { mutableStateOf(it.phone) }
+
 
                     TextField(
                         value = name,
@@ -252,18 +252,18 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             .padding(4.dp)
                     )
                     TextField(
-                        value = location,
-                        label = { Text("Location") },
-                        onValueChange = { location = it },
+                        value = email,
+                        label = { Text("Email") },
+                        onValueChange = {email = it },
                         colors= customTextFieldColors,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
                     )
                     TextField(
-                        value = organization,
-                        label = { Text("Organization") },
-                        onValueChange = { organization = it },
+                        value = phone,
+                        label = { Text("Phone") },
+                        onValueChange = { phone = it },
                         colors= customTextFieldColors,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -288,13 +288,13 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             onDismissRequest = { isMenuExpanded = false },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            employees?.forEach { employee ->
+                            roles?.forEach { rol ->
                                 DropdownMenuItem(onClick = {
-                                    selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
-                                    administratorId = employee.id
+                                    selectedOption= "Role:${ userRoleToString(rol)}"
+                                    user.role= rol
                                     isMenuExpanded = false
                                 }) {
-                                    Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}" )
+                                    Text("Role:${ userRoleToString(rol)}" )
                                 }
                             }
                         }
@@ -303,7 +303,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ){
                         Button(colors = ButtonDefaults.buttonColors(Color.Red),
-                            onClick = { navController.navigate("home")},
+                            onClick = { navController.navigate("manageUser")},
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()) {
@@ -313,12 +313,10 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             .weight(1f)
                             .fillMaxWidth(),
                             onClick = {
-                                warehouse.name =name
-                                warehouse.location = location
-                                warehouse.organization = organization
-                                warehouse.idAdministrator = administratorId
-
-                                updateWarehouse()
+                                user.name =name
+                                user.email = email
+                                user.phone = phone
+                                updateUser()
                             } ) {
                             Text(text = "Update", color = Color.White)
                         }

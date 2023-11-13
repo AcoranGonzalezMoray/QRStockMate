@@ -19,10 +19,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -88,6 +93,9 @@ fun ManageUserScreen(navController: NavController) {
         }
     }
 
+    LaunchedEffect(Unit){
+        loadEmployees()
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isloading,
@@ -140,7 +148,7 @@ fun ManageUserScreen(navController: NavController) {
             // Lista de usuarios filtrada
             LazyColumn {
                 items(filteredEmployees) { employee ->
-                    UserListItem(user = employee)
+                    UserListItem(user = employee, navController)
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -150,7 +158,7 @@ fun ManageUserScreen(navController: NavController) {
 }
 
 @Composable
-fun UserListItem(user: User) {
+fun UserListItem(user: User, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -195,7 +203,7 @@ fun UserListItem(user: User) {
                         data = imageUrl,
                         builder = {
                             crossfade(true)
-                            placeholder(R.drawable.user)
+                            placeholder(R.drawable.loading)
                         }
                     )
 
@@ -220,6 +228,17 @@ fun UserListItem(user: User) {
                 Text(text = "Email: ${user.email}")
                 Text(text = "Phone: ${user.phone}")
                 Text(text = "Role: ${userRoleToString(user.role)}")
+                Button(
+                    colors = ButtonDefaults.buttonColors(Color.Yellow),onClick = {
+                        DataRepository.setUserPlus(user)
+                        navController.navigate("updateUser")
+                                                                                 }, ) {
+                    Icon(
+                        imageVector = Icons.Filled.Create,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }

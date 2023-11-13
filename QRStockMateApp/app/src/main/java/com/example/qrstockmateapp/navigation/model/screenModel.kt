@@ -19,7 +19,7 @@ class ScreenModel {
         object TransactionHistory : HomeScreens("transactionHistory", "History", Icons.Filled.DateRange)
         object Scan : HomeScreens("scan", "Scan QR", Icons.Filled.AddCircle)
         object Search : HomeScreens("search", "Search", Icons.Filled.Search)
-        object Profile : HomeScreens("profile", "My Profile", Icons.Filled.Person)
+        object Profile : HomeScreens("profile", "Profile", Icons.Filled.Person)
 
     }
 

@@ -87,9 +87,7 @@ fun HomeScreen(navController: NavController) {
 
                         if (warehouseResponse.isSuccessful){
                             val warehousesIO = warehouseResponse.body()
-                            Log.d("Warehouse", "SI")
                             if(warehousesIO!=null ){
-                                Log.d("Warehouse", "${warehousesIO}")
                                 DataRepository.setWarehouses(warehousesIO)
                                 warehouses = warehousesIO
                             }
@@ -198,7 +196,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
             )
             .padding(16.dp)
             .background(Color.White),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
@@ -228,7 +226,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
                     data = warehouse.url,
                     builder = {
                         crossfade(true)
-                        placeholder(R.drawable.user)
+                        placeholder(R.drawable.loading)
                     }
                 )
                 Box(
@@ -280,38 +278,55 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
+
                 Row {
-                    Button(
-                        onClick = {
-                            DataRepository.setWarehousePlus(warehouse)
-                            navController.navigate("updateWarehouse")
-                        },
-                        colors = ButtonDefaults.buttonColors(Color.Yellow),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(end = 4.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Create,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
+                    if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
+                        Button(
+                            onClick = {
+                                DataRepository.setWarehousePlus(warehouse)
+                                navController.navigate("updateWarehouse")
+                            },
+                            colors = ButtonDefaults.buttonColors(Color.Yellow),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(end = 4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Create,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
                     }
-                    Button(
-                        onClick = { },
-                        colors = ButtonDefaults.buttonColors(Color.Red),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f) // Este botón también ocupa la mitad del espacio
-                            .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
+                    if(DataRepository.getUser()?.role==0) {
+                        Button(
+                            onClick = { },
+                            colors = ButtonDefaults.buttonColors(Color.Red),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f) // Este botón también ocupa la mitad del espacio
+                                .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
                     }
+                }
+
+                Button(
+                    onClick = {
+                        DataRepository.setWarehousePlus(warehouse)
+                        navController.navigate("openWarehouse")
+                              },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color.Green),
+                ) {
+                    Text(text = "Open", color = Color.White)
                 }
 
             }
