@@ -163,7 +163,7 @@ fun HomeScreen(navController: NavController) {
 
             // Mostrar la lista de almacenes
             if (warehouses.isNotEmpty()) {
-                WarehouseList(warehouses,navController)
+                WarehouseList(warehouses,navController,loadWarehouse)
             }else{
                 Box {
                     Text(text = "There are no warehouses available for this company")
@@ -175,17 +175,39 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun WarehouseList(warehouses: List<Warehouse>,navController: NavController) {
+fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadWarehouse: ()->Unit) {
     LazyColumn {
         items(warehouses) { warehouse ->
-            WarehouseItem(warehouse,navController)
+            WarehouseItem(warehouse,navController, loadWarehouse)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
     }
 }
 
 @Composable
-fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
+fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
+    val deleteWarehouse: () -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            val id = DataRepository.getCompany()?.id
+            if(id!=null){
+                Log.d("DATA", "${id}, ${warehouse}")
+                val response = RetrofitInstance.api.deleteWarehouse(id,warehouse)
+                if(response.isSuccessful){
+                    loadWarehouse()
+                }else{
+                    try {
+                        val errorBody = response.errorBody()?.string()
+                        Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
+                    } catch (e: Exception) {
+                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                    }
+                }
+            }
+        }
+    }
+
+
+
     // Muestra los detalles del almacén dentro de un Card
     Box(
         modifier = Modifier
@@ -301,7 +323,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
                     }
                     if(DataRepository.getUser()?.role==0) {
                         Button(
-                            onClick = { },
+                            onClick = {deleteWarehouse()},
                             colors = ButtonDefaults.buttonColors(Color.Red),
                             modifier = Modifier
                                 .fillMaxWidth()

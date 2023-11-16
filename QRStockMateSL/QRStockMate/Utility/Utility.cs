@@ -52,8 +52,11 @@ namespace QRStockMate.Utility
 
             // Convierte la lista actualizada de IDs de nuevo a una cadena
             string updatedString = string.Join(";", idList);
-            updatedString += ";";
-            return updatedString;
+			if (updatedString != "")
+			{
+				updatedString += ";";
+			}
+			return updatedString;
         }
 
 
