@@ -4,23 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.view.BottomNavigationScreen
 import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
+import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
-import com.example.qrstockmateapp.ui.theme.QRStockMateAppTheme
+import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,11 +45,9 @@ fun Navigation(navController: NavHostController) {
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
                 if (loggedIn) {
-                    Log.d("UserDetails", "User: $user") // Imprime los detalles del usuario en Logcat
-                    Log.d("UserDetails", "Token: $token") // Imprime los detalles del usuario en Logcat
-
                     // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
+                        Initializaton(user = user, token=token)
                         navController.navigate("bottomScreen")
                     }
                 }
@@ -61,17 +55,44 @@ fun Navigation(navController: NavHostController) {
         }
 
         composable("forgotPassword"){
-            ForgotPassword(navController = navController) {
+            ForgotPassword(navController = navController) {}
+        }
 
-            }
+        composable("joinWithCode"){
+            JoinWithCodeScreen(navController = navController)
+        }
+
+        composable("signUp"){
+            SignUpScreen(navController = navController)
         }
 
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
-            BottomNavigationScreen()
+            BottomNavigationScreen(navController)
         }
     }
 }
 
+suspend fun Initializaton(user: User, token:String){
+    DataRepository.setUser(user)
+    DataRepository.setToken(token)
 
+    val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
+    if (companyResponse.isSuccessful) {
+        val company = companyResponse.body()
+        if(company!=null)DataRepository.setCompany(company)
+    } else Log.d("compnayError", "error")
+
+
+    val company = DataRepository.getCompany()
+    if(company!=null){
+        val employeesResponse = RetrofitInstance.api.getEmployees(company)
+        if (employeesResponse.isSuccessful) {
+            val employees = employeesResponse.body()
+            Log.d("EMPLOYEE", "${employees}")
+            if(employees!=null)DataRepository.setEmployees(employees)
+        } else Log.d("compnayError", "error")
+    }
+
+}
 

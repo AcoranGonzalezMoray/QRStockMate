@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.navigation.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -15,14 +16,15 @@ class ScreenModel {
         val icon: ImageVector
     ) {
         object Home : HomeScreens("home", "Home", Icons.Filled.Home)
-        object Search : HomeScreens("search", "Search", Icons.Filled.Search)
+        object TransactionHistory : HomeScreens("transactionHistory", "History", Icons.Filled.DateRange)
         object Scan : HomeScreens("scan", "Scan QR", Icons.Filled.AddCircle)
-        object Profile : HomeScreens("profile", "My Profile", Icons.Filled.Person)
+        object Search : HomeScreens("search", "Search", Icons.Filled.Search)
+        object Profile : HomeScreens("profile", "Profile", Icons.Filled.Person)
 
     }
 
     val screensInHomeFromBottomNav = listOf(
-        HomeScreens.Home, HomeScreens.Scan, HomeScreens.Search, HomeScreens.Profile
+        HomeScreens.Home, HomeScreens.TransactionHistory,  HomeScreens.Scan, HomeScreens.Search, HomeScreens.Profile
     )
 
 }
