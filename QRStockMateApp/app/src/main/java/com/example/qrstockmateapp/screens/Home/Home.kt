@@ -91,7 +91,9 @@ fun HomeScreen(navController: NavController) {
                                 DataRepository.setWarehouses(warehousesIO)
                                 warehouses = warehousesIO
                             }
-                        }else Log.d("Warehouse", "NO")
+                        }else {
+                            warehouses = emptyList()
+                        }
 
                         if (employeesResponse.isSuccessful ){
                             val employees = employeesResponse.body()
