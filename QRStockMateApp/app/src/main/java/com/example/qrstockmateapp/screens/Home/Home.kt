@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -188,6 +189,8 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
 
 @Composable
 fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
     val deleteWarehouse: () -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             val id = DataRepository.getCompany()?.id
@@ -222,6 +225,40 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
             .background(Color.White),
         contentAlignment = Alignment.Center,
     ) {
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    // Handle dismissal if needed
+                    showDialog = false
+                },
+                title = {
+                    Text(text = "Alert")
+                },
+                text = {
+                    Text(text ="Are you sure you want to delete?")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            deleteWarehouse()
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Confirm")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            // Handle dismissal action (e.g., cancel)
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -325,7 +362,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                     }
                     if(DataRepository.getUser()?.role==0) {
                         Button(
-                            onClick = {deleteWarehouse()},
+                            onClick = {showDialog = true},
                             colors = ButtonDefaults.buttonColors(Color.Red),
                             modifier = Modifier
                                 .fillMaxWidth()

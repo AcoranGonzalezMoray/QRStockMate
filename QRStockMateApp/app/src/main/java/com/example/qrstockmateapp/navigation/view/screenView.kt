@@ -22,7 +22,11 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -120,6 +124,8 @@ fun Drawer(
     scaffoldState: ScaffoldState,
     scope: CoroutineScope
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     val deleteAccount:()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             var user =DataRepository.getUser()
@@ -155,6 +161,40 @@ fun Drawer(
                 .fillMaxWidth(1f)
                 .padding(10.dp)
         ) {
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        showDialog = false
+                    },
+                    title = {
+                        Text(text = "Alert")
+                    },
+                    text = {
+                        Text(text ="Are you sure you want to delete this account?")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                deleteAccount()
+                                showDialog = false
+                            }
+                        ) {
+                            Text("Confirm")
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = {
+                                // Handle dismissal action (e.g., cancel)
+                                showDialog = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -300,7 +340,7 @@ fun Drawer(
                         .padding(top = 16.dp)
                 ) {
                     Button(
-                        onClick = {deleteAccount()},
+                        onClick = {showDialog = true},
                         colors = ButtonDefaults.buttonColors(Color.Red),
                         modifier = Modifier
                             .fillMaxWidth()
