@@ -61,7 +61,7 @@ interface ApiService {
         @Body user: User
     ): Response<voidResponse>
 
-    @HTTP(method = "DELETE", path = "/User/DeleteAccount", hasBody = true) //Para un Delete con Body hay que hacerlo asi
+    @HTTP(method = "DELETE", path = "User/DeleteAccount", hasBody = true) //Para un Delete con Body hay que hacerlo asi
     suspend fun deleteAccount(
         @Body user: User
     ): Response<Unit>
@@ -84,6 +84,12 @@ interface ApiService {
         @Part("userId") userId: RequestBody,
         @Part image: MultipartBody.Part
     ):Response<Void>
+
+    @HTTP(method = "DELETE", path = "Warehouse/{idCompany}", hasBody = true) //Para un Delete con Body hay que hacerlo asi
+    suspend fun deleteWarehouse(
+        @Path("idCompany") id: Int,
+        @Body warehouse: Warehouse
+    ): Response<Void>
 }
 
 

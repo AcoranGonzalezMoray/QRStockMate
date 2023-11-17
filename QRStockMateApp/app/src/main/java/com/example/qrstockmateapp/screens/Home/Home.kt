@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -91,7 +92,9 @@ fun HomeScreen(navController: NavController) {
                                 DataRepository.setWarehouses(warehousesIO)
                                 warehouses = warehousesIO
                             }
-                        }else Log.d("Warehouse", "NO")
+                        }else {
+                            warehouses = emptyList()
+                        }
 
                         if (employeesResponse.isSuccessful ){
                             val employees = employeesResponse.body()
@@ -163,7 +166,7 @@ fun HomeScreen(navController: NavController) {
 
             // Mostrar la lista de almacenes
             if (warehouses.isNotEmpty()) {
-                WarehouseList(warehouses,navController)
+                WarehouseList(warehouses,navController,loadWarehouse)
             }else{
                 Box {
                     Text(text = "There are no warehouses available for this company")
@@ -175,17 +178,41 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun WarehouseList(warehouses: List<Warehouse>,navController: NavController) {
+fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadWarehouse: ()->Unit) {
     LazyColumn {
         items(warehouses) { warehouse ->
-            WarehouseItem(warehouse,navController)
+            WarehouseItem(warehouse,navController, loadWarehouse)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
     }
 }
 
 @Composable
-fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
+fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    val deleteWarehouse: () -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            val id = DataRepository.getCompany()?.id
+            if(id!=null){
+                Log.d("DATA", "${id}, ${warehouse}")
+                val response = RetrofitInstance.api.deleteWarehouse(id,warehouse)
+                if(response.isSuccessful){
+                    loadWarehouse()
+                }else{
+                    try {
+                        val errorBody = response.errorBody()?.string()
+                        Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
+                    } catch (e: Exception) {
+                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                    }
+                }
+            }
+        }
+    }
+
+
+
     // Muestra los detalles del almacén dentro de un Card
     Box(
         modifier = Modifier
@@ -198,6 +225,40 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
             .background(Color.White),
         contentAlignment = Alignment.Center,
     ) {
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    // Handle dismissal if needed
+                    showDialog = false
+                },
+                title = {
+                    Text(text = "Alert")
+                },
+                text = {
+                    Text(text ="Are you sure you want to delete?")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            deleteWarehouse()
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Confirm")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            // Handle dismissal action (e.g., cancel)
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -301,7 +362,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController) {
                     }
                     if(DataRepository.getUser()?.role==0) {
                         Button(
-                            onClick = { },
+                            onClick = {showDialog = true},
                             colors = ButtonDefaults.buttonColors(Color.Red),
                             modifier = Modifier
                                 .fillMaxWidth()
