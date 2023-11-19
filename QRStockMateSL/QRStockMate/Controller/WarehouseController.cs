@@ -111,20 +111,22 @@ namespace QRStockMate.Controller
                     await _context_storage.DeleteImage(warehouse.Url);
                 }
                 var idItems = warehouse.IdItems;
-                idItems = idItems.TrimEnd(';'); // Elimina el último punto y coma
-                List<int> idList = idItems.Split(';').Select(int.Parse).ToList();
-                List<Item> itemList = new List<Item>();
-                foreach (int b in idList)
-                {
-                    Item item = await _itemService.GetById(b);
-                    if (item != null)
-                    {
-                        itemList.Add(item);
-                    }
-                }
-                await _itemService.DeleteRange(itemList);
+				if (idItems != ""){
+					idItems = idItems.TrimEnd(';'); // Elimina el último punto y coma
+					List<int> idList = idItems.Split(';').Select(int.Parse).ToList();
+					List<Item> itemList = new List<Item>();
+					foreach (int b in idList)
+					{
+						Item item = await _itemService.GetById(b);
+						if (item != null)
+						{
+							itemList.Add(item);
+						}
+					}
+					await _itemService.DeleteRange(itemList);
+				}
 
-                await _warehouseService.Delete(warehouse);
+				await _warehouseService.Delete(warehouse);
                 await _companyService.Update(company);
 
                 return NoContent(); //204
