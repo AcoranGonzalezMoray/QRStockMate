@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
@@ -206,6 +208,14 @@ fun Item(item: Item,navController: NavController) {
                 )
                 androidx.compose.material.Text(text = "Location: ${item.location}")
                 androidx.compose.material.Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
+                Button(onClick = {
+                    if(DataRepository.getUser()?.role!=3){
+                        DataRepository.setItem(item)
+                        navController.navigate("itemDetails")
+                    }
+                },colors = ButtonDefaults.buttonColors(Color.Green)) {
+                    Text(text = "Open", color = Color.White)
+                }
             }
         }
     }

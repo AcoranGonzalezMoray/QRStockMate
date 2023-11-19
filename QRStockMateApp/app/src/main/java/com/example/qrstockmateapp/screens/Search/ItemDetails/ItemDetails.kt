@@ -219,8 +219,13 @@ fun ItemDetailsScreen(navController: NavController) {
                         androidx.compose.material.Text("+")
                     }
 
-                    Spacer(modifier = Modifier.width(50.dp))
-
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Button(onClick = {
+                                     navController.popBackStack()
+                    }, colors = ButtonDefaults.buttonColors(Color.Red)) {
+                        Text(text = "Cancel", color=Color.White)
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
                     Button(
                         onClick = {
 
@@ -239,9 +244,8 @@ fun ItemDetailsScreen(navController: NavController) {
                                 }
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(Color.Red)
                     ) {
-                        androidx.compose.material.Text("Update")
+                        androidx.compose.material.Text("Update", color = Color.White)
                     }
                 }
             }
