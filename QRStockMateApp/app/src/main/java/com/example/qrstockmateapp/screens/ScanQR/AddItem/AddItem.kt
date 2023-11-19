@@ -1,4 +1,4 @@
-package com.example.qrstockmateapp.screens.Search.ItemDetails
+package com.example.qrstockmateapp.screens.ScanQR.AddItem
 
 import android.os.Build
 import android.util.Log
@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
@@ -32,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +57,7 @@ import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
+import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -67,7 +71,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemDetailsScreen(navController: NavController) {
+fun AddItemScreen(navController: NavController) {
     var item = DataRepository.getItem()
     var availableCount by remember { mutableStateOf(item?.stock) }
     val availableState = rememberUpdatedState(availableCount)
@@ -82,20 +86,30 @@ fun ItemDetailsScreen(navController: NavController) {
         backgroundColor = Color.LightGray
     )
 
-    val updateStock : (item:Item) -> Unit = {
+    var selectedOption by remember { mutableStateOf("Select a warehouse to add your product") }
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
+    var warehouses by remember { mutableStateOf(emptyList<Warehouse>()) }
+
+    var location by remember { mutableStateOf(item?.location.toString()) }
+    var name by remember { mutableStateOf(item?.name.toString()) }
+
+    LaunchedEffect(Unit) {
+        warehouses = DataRepository.getWarehouses()!!
+    }
+
+    val addItem : (item:Item) -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                if(item!=null){
-                    Log.d("excepcionItemCambio","${item}")
-                    val response =  RetrofitInstance.api.updateItem(item)
-
-                    if (response.isSuccessful) {
+                if (item != null) {
+                    val itemResponse = RetrofitInstance.api.addItem(item.warehouseId, item);
+                    if(itemResponse.isSuccessful){
                         val user = DataRepository.getUser()
                         if(user!=null){
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "The info of the ${item?.name} item has been modified",
+                                Transaction(0,user.name,user.code, "An item,${item.name} , has been added to the warehouse with id ${item.warehouseId}",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
@@ -109,9 +123,16 @@ fun ItemDetailsScreen(navController: NavController) {
                                 }
                             }
                         }
-                        val wResponse = response.body()
-                        Log.d("UpdatedItem", "${wResponse}")
+                        withContext(Dispatchers.Main) {
+                            navController.navigate("home")
+                        }
                     }else{
+                        try {
+                            val errorBody = itemResponse.errorBody()?.string()
+                            Log.d("ErrorBody", "$errorBody")
+                        } catch (e: Exception) {
+                            Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                        }
                     }
                 }
             }catch (e: Exception) {
@@ -125,6 +146,7 @@ fun ItemDetailsScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -173,29 +195,54 @@ fun ItemDetailsScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            var location by remember { mutableStateOf(item?.location.toString()) }
-            var warehouse by remember { mutableStateOf(item?.warehouseId) }
 
-            Text(text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Location: ")
-                }
-                append(location)
-            },
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+            TextField(
+                value = name,
+                label = { Text("Name: ") },
+                onValueChange = { name = it },
+                colors= customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
             )
-            Text(text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Warehouse: ")
-                }
-                append(DataRepository.getWarehouses()?.find { it.id == warehouse }?.name)
-            },
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+
+            TextField(
+                value = location,
+                label = { Text("Location: ") },
+                onValueChange = { location = it },
+                colors= customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
             )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = selectedOption,
+                    modifier = Modifier
+                        .background(Color.LightGray)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            isMenuExpanded = true
+                        }
+                        .padding(16.dp)
+                )
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = { isMenuExpanded = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    warehouses.forEach { warehouse ->
+                        DropdownMenuItem(onClick = {
+                            selectedOption = "Name : ${warehouse.name} with Id :${warehouse.id}"
+                            isMenuExpanded = false
+                        }) {
+                            Text("Name : ${warehouse.name} with Id : ${warehouse.id}")
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -246,7 +293,7 @@ fun ItemDetailsScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.width(20.dp))
                     Button(onClick = {
-                                     navController.popBackStack()
+                        navController.popBackStack()
                     }, colors = ButtonDefaults.buttonColors(Color.Red)) {
                         Text(text = "Cancel", color=Color.White)
                     }
@@ -260,8 +307,10 @@ fun ItemDetailsScreen(navController: NavController) {
                             if (newItem != null) {
                                 if (newStock != null && newStock>=0) {
                                     newItem.stock = newStock
-                                    Log.d("NEW ITEM","Nuevo Item: ${newItem}")
-                                    updateStock(newItem)
+                                    newItem.warehouseId = selectedOption.split(':')[2].toInt()
+                                    newItem.location =  location
+                                    newItem.name = name
+                                    addItem(newItem)
                                     availableCount = newStock
                                     count = 0
                                 }else{
@@ -270,7 +319,7 @@ fun ItemDetailsScreen(navController: NavController) {
                             }
                         },
                     ) {
-                        androidx.compose.material.Text("Update", color = Color.White)
+                        androidx.compose.material.Text("Add", color = Color.White)
                     }
                 }
             }
@@ -280,5 +329,3 @@ fun ItemDetailsScreen(navController: NavController) {
     }
 
 }
-
-

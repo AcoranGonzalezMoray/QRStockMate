@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.api.services
 
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import okhttp3.MultipartBody
@@ -100,6 +101,20 @@ interface ApiService {
     suspend fun updateItem(
         @Body item: Item
     ): Response<voidResponse>
+
+    @POST("TransactionHistory/")
+    suspend fun addHistory(
+        @Body transaction:Transaction
+    ): Response<voidResponse>
+
+    @GET("TransactionHistory/")
+    suspend fun getHistory(): Response<List<Transaction>>
+
+    @POST("Warehouse/AddItem/{Id}")
+    suspend fun addItem(
+        @Path("Id") Id: Int,
+        @Body item: Item
+    ):Response<Void>
 }
 
 

@@ -1,7 +1,9 @@
 package com.example.qrstockmateapp.screens.Home
 
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -57,6 +59,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Company
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -65,6 +68,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -187,6 +192,7 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
     var showDialog by remember { mutableStateOf(false) }
@@ -198,6 +204,25 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                 Log.d("DATA", "${id}, ${warehouse}")
                 val response = RetrofitInstance.api.deleteWarehouse(id,warehouse)
                 if(response.isSuccessful){
+                    val user = DataRepository.getUser()
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.name,user.code, "The ${warehouse?.name} warehouse  has been deleted",
+                                formattedDate , 3)
+                        )
+                        if(addTransaccion.isSuccessful){
+                            Log.d("Transaccion", "OK")
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
                     loadWarehouse()
                 }else{
                     try {

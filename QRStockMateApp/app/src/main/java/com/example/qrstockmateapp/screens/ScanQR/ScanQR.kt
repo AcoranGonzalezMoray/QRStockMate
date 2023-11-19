@@ -1,5 +1,7 @@
 package com.example.qrstockmateapp.screens.ScanQR
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,12 +16,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.example.qrstockmateapp.api.models.Item
+import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.qr.BarcodeAnalyser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 @Composable
@@ -47,6 +57,8 @@ fun ScanScreen(navController: NavController) {
                 .also {
                     it.setAnalyzer(cameraExecutor) { image ->
                         BarcodeAnalyser { qrCodeValue ->
+                            addItem(qrCodeValue)
+                            navController.navigate("addItem")
                             Log.d("QRCodeScan", "QR Code found: $qrCodeValue")
                             Toast.makeText(context, "QR Code found: $qrCodeValue", Toast.LENGTH_SHORT).show()
                         }.analyze(image)
@@ -71,4 +83,18 @@ fun ScanScreen(navController: NavController) {
     },
         modifier = Modifier
             .fillMaxSize())
+}
+
+fun addItem(qrCodeValue: String) {
+    if (qrCodeValue != null) {
+        val parts = qrCodeValue.split(';')
+        val productId = parts[0].toInt()
+        val name = parts[1]
+        var warehouseId = parts[2].toInt()
+        var location = parts[3]
+        var stock = parts[4].toInt()
+        var imageUrl = ""
+        if (parts[5] != "null") imageUrl = parts[5]
+        DataRepository.setItem(Item(productId, name, warehouseId, location, stock, imageUrl))
+    }
 }
