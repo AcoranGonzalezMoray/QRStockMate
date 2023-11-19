@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.navigation.logic
 
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -21,7 +22,7 @@ import com.example.qrstockmateapp.screens.Search.SearchScreen
 import com.example.qrstockmateapp.screens.TransactionHistory.TransactionHistoryScreen
 
 
-@OptIn(ExperimentalAnimationApi::class)
+@androidx.annotation.OptIn(ExperimentalGetImage::class) @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "home") {
@@ -58,5 +59,10 @@ fun Navigation(navController: NavHostController) {
         composable("updateUser"){
             UpdateUserScreen(navController)
         }
+        /*
+        composable("productInfo"){
+            ProductInfoScreen(navController)
+        }
+        */
     }
 }

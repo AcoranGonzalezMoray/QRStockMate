@@ -90,6 +90,12 @@ interface ApiService {
         @Path("idCompany") id: Int,
         @Body warehouse: Warehouse
     ): Response<Void>
+
+    @POST("Warehouse/AddItem/{Id}")
+    suspend fun addItem(
+        @Path("Id") Id: Int,
+        @Body item: Item
+    ):Response<Void>
 }
 
 
