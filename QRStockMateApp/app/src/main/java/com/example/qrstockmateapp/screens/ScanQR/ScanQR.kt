@@ -58,7 +58,7 @@ fun ScanScreen(navController: NavController) {
                     it.setAnalyzer(cameraExecutor) { image ->
                         BarcodeAnalyser { qrCodeValue ->
                             addItem(qrCodeValue)
-                            navController.navigate("home")
+                            navController.navigate("addItem")
                             Log.d("QRCodeScan", "QR Code found: $qrCodeValue")
                             Toast.makeText(context, "QR Code found: $qrCodeValue", Toast.LENGTH_SHORT).show()
                         }.analyze(image)
@@ -95,26 +95,6 @@ fun addItem(qrCodeValue: String) {
         var stock = parts[4].toInt()
         var imageUrl = ""
         if (parts[5] != "null") imageUrl = parts[5]
-
-
-        GlobalScope.launch(Dispatchers.IO) {
-            warehouseId = 6
-            val itemResponse = RetrofitInstance.api.addItem(warehouseId, Item(productId, name, warehouseId, location, stock, imageUrl));
-
-            if(itemResponse.isSuccessful){
-                Log.d("M", "Entro")
-            }else{
-                try {
-                    val errorBody = itemResponse.errorBody()?.string()
-                    Log.d("ErrorBody", "$errorBody")
-                } catch (e: Exception) {
-                    Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
-                }
-            }
-        }
-
+        DataRepository.setItem(Item(productId, name, warehouseId, location, stock, imageUrl))
     }
-
-
-
 }
