@@ -50,6 +50,11 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.camera:camera-camera2:1.3.0-alpha04")
+    implementation ("androidx.camera:camera-lifecycle:1.3.0-alpha04")
+    implementation ("androidx.camera:camera-view:1.3.0-alpha04")
+    implementation ("com.google.mlkit:barcode-scanning:17.0.3")
+
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation ("io.coil-kt:coil-compose:1.4.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")

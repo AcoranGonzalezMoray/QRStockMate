@@ -1,10 +1,14 @@
 package com.example.qrstockmateapp
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,11 +28,45 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+            if (isCameraPermissionGranted()) {
+                setContent {
+                    val navController = rememberNavController()
+                    NavigationContent(navController)
+                }
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CAMERA),
+                    PERMISSION_CAMERA_REQUEST
+                )
+            }
 
-        setContent {
-            val navController = rememberNavController()
-            NavigationContent(navController)
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSION_CAMERA_REQUEST) {
+            if (isCameraPermissionGranted()) {
+                // start camera
+            } else {
+                Log.e(TAG, "no camera permission")
+            }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun isCameraPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            baseContext,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+        private const val PERMISSION_CAMERA_REQUEST = 1
     }
 }
 
