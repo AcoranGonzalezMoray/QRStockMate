@@ -29,10 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
             if (isCameraPermissionGranted()) {
-                setContent {
-                    val navController = rememberNavController()
-                    NavigationContent(navController)
-                }
+
             } else {
                 ActivityCompat.requestPermissions(
                     this,
@@ -40,6 +37,10 @@ class MainActivity : ComponentActivity() {
                     PERMISSION_CAMERA_REQUEST
                 )
             }
+        setContent {
+            val navController = rememberNavController()
+            NavigationContent(navController)
+        }
 
     }
     override fun onRequestPermissionsResult(

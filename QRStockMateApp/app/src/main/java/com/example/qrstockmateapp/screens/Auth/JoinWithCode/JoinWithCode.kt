@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.screens.Auth.JoinWithCode
 
 import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -72,6 +73,9 @@ fun JoinWithCodeScreen(navController: NavHostController) {
     val keyboardOptions = KeyboardOptions.Default.copy(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Done
+    )
+    val keyboardOptionsEmail = KeyboardOptions(
+        keyboardType = KeyboardType.Email
     )
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         cursorColor = Color.Black,
@@ -156,9 +160,11 @@ fun JoinWithCodeScreen(navController: NavHostController) {
             isError = isError,
             onValueChange = { email = it },
             label = { Text("Email") },
+            keyboardOptions = keyboardOptionsEmail,
             modifier = Modifier.fillMaxWidth(),
             colors = customTextFieldColors
         )
+        if(!isValidEmail(email))Text("put a valid email", color = Color.Red)
         Spacer(modifier = Modifier.height(16.dp))
 
         TextField(
@@ -246,4 +252,8 @@ fun JoinWithCodeScreen(navController: NavHostController) {
             }
         }
     }
+}
+fun isValidEmail(email: String): Boolean {
+    val pattern = Patterns.EMAIL_ADDRESS
+    return pattern.matcher(email).matches()
 }

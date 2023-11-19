@@ -141,7 +141,7 @@ fun ManageUserScreen(navController: NavController) {
                 colors = customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 12.dp)
             )
 
 

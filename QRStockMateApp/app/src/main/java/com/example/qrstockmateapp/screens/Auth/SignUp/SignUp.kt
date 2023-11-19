@@ -35,6 +35,7 @@ import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RegistrationBody
 import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -109,7 +110,9 @@ fun SignUpScreen(navController: NavHostController) {
         }
 
     }
-
+    val keyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Email
+    )
     Column(
         modifier = Modifier.padding(16.dp) ,
         verticalArrangement = Arrangement.Center,
@@ -145,9 +148,11 @@ fun SignUpScreen(navController: NavHostController) {
             isError = isError,
             onValueChange = { email = it },
             label = { Text("Email") },
+            keyboardOptions = keyboardOptions,
             modifier = Modifier.fillMaxWidth(),
             colors = customTextFieldColors
         )
+        if(!isValidEmail(email))Text("put a valid email", color = Color.Red)
         Spacer(modifier = Modifier.height(16.dp))
 
         TextField(

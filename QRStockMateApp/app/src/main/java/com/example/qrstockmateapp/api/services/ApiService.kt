@@ -90,6 +90,16 @@ interface ApiService {
         @Path("idCompany") id: Int,
         @Body warehouse: Warehouse
     ): Response<Void>
+
+    @GET("Item/Search/{name}")
+    suspend fun searchItem(
+        @Path("name") id: String,
+    ): Response<List<Item>>
+
+    @PUT("Item/")
+    suspend fun updateItem(
+        @Body item: Item
+    ): Response<voidResponse>
 }
 
 

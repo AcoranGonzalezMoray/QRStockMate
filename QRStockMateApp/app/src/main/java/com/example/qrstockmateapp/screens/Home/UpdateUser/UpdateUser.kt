@@ -79,7 +79,19 @@ fun UpdateUserScreen(navController: NavController) {
                 val imagePart = MultipartBody.Part.createFormData("image", file.name, imageRequestBody)
 
                 val imageResponse =  RetrofitInstance.api.updateImageUser(userIdRequestBody, imagePart)
+                val cm  =DataRepository.getCompany()
+                if(cm!=null){
+                    val employeesResponse = RetrofitInstance.api.getEmployees(cm)
+                    if (employeesResponse.isSuccessful) {
+                        val employeesIO = employeesResponse.body()
+                        val me = employeesIO?.find {it.id == userId  }
+                        if(me!=null)DataRepository.setUser(me)
+                    }
+                }
+
+
                 if(imageResponse.isSuccessful){
+
                     withContext(Dispatchers.Main){
                         navController.navigate("manageUser")
                     }
@@ -154,6 +166,15 @@ fun UpdateUserScreen(navController: NavController) {
 
                     if (response.isSuccessful) {
                         val wResponse = response.body()
+                        val cm  =DataRepository.getCompany()
+                        if(cm!=null){
+                            val employeesResponse = RetrofitInstance.api.getEmployees(cm)
+                            if (employeesResponse.isSuccessful) {
+                                val employeesIO = employeesResponse.body()
+                                val me = employeesIO?.find {it.id == user.id  }
+                                if(me!=null)DataRepository.setUser(me)
+                            }
+                        }
                         withContext(Dispatchers.Main){
                             navController.navigate("manageUser")
                         }
