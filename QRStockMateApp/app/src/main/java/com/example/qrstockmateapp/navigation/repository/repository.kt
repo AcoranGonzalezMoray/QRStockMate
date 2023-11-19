@@ -1,11 +1,13 @@
 package com.example.qrstockmateapp.navigation.repository
 
 import com.example.qrstockmateapp.api.models.Company
+import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 
 object DataRepository {
     private var user: User? = null
+    private var item: Item? = null
     private var company: Company? =null
     private var warehouses: List<Warehouse>? = null
     private var employees: List<User>? = null
@@ -72,6 +74,13 @@ object DataRepository {
         return user
     }
 
+    fun setItem(newItem: Item) {
+        item = newItem;
+    }
+
+    fun getItem(): Item? {
+        return item
+    }
 
     fun LogOut(){
         user = null

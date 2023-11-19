@@ -91,11 +91,23 @@ interface ApiService {
         @Body warehouse: Warehouse
     ): Response<Void>
 
+
     @POST("Warehouse/AddItem/{Id}")
     suspend fun addItem(
         @Path("Id") Id: Int,
         @Body item: Item
     ):Response<Void>
+
+    @GET("Item/Search/{name}")
+    suspend fun searchItem(
+        @Path("name") id: String,
+    ): Response<List<Item>>
+
+    @PUT("Item/")
+    suspend fun updateItem(
+        @Body item: Item
+    ): Response<voidResponse>
+
 }
 
 

@@ -18,13 +18,17 @@ import com.example.qrstockmateapp.screens.Home.UpdateUser.UpdateUserScreen
 import com.example.qrstockmateapp.screens.Home.UpdateWarehouse.UpdateWarehouseScreen
 import com.example.qrstockmateapp.screens.Profile.ProfileScreen
 import com.example.qrstockmateapp.screens.ScanQR.ScanScreen
+import com.example.qrstockmateapp.screens.Search.ItemDetails.ItemDetailsScreen
 import com.example.qrstockmateapp.screens.Search.SearchScreen
 import com.example.qrstockmateapp.screens.TransactionHistory.TransactionHistoryScreen
 
 
-@androidx.annotation.OptIn(ExperimentalGetImage::class) @OptIn(ExperimentalAnimationApi::class)
+
+@OptIn(ExperimentalAnimationApi::class)
+@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
+
 @Composable
-fun Navigation(navController: NavHostController) {
+fun  Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(navController)
@@ -59,10 +63,9 @@ fun Navigation(navController: NavHostController) {
         composable("updateUser"){
             UpdateUserScreen(navController)
         }
-        /*
-        composable("productInfo"){
-            ProductInfoScreen(navController)
+
+        composable("itemDetails"){
+            ItemDetailsScreen(navController)
         }
-        */
     }
 }
