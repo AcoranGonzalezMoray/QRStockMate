@@ -6,7 +6,7 @@ data class Item (
     val name:String,
     val warehouseId:Int,
     val location:String,
-    val stock:Int,
+    var stock:Int,
     val url:String
 
 )
