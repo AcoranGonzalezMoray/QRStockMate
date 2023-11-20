@@ -1,7 +1,10 @@
 package com.example.qrstockmateapp.navigation.view
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,9 +53,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationScreen(navControllerLogin: NavController) {
+fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: SharedPreferences) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
 
@@ -65,7 +69,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController) {
             Drawer(
 
                 item = ScreenModel().screensInHomeFromBottomNav,
-
+                sharedPreferences,
                 navController = navController,
                 navControllerLogin = navControllerLogin,
                 scope = scope,
@@ -118,7 +122,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController) {
 @Composable
 fun Drawer(
     item: List<ScreenModel.HomeScreens>,
-
+    sharedPreferences: SharedPreferences,
     navController: NavController,
     navControllerLogin: NavController,
     scaffoldState: ScaffoldState,
@@ -176,6 +180,7 @@ fun Drawer(
                     confirmButton = {
                         Button(
                             onClick = {
+                                sharedPreferences.edit().clear().apply()
                                 deleteAccount()
                                 showDialog = false
                             }
@@ -312,6 +317,7 @@ fun Drawer(
                     .fillMaxWidth()
                     .clickable(onClick = {
                         DataRepository.LogOut()
+                        sharedPreferences.edit().clear().apply()
                         navControllerLogin.navigate("login")
                         scope.launch { scaffoldState.drawerState.close() }
 

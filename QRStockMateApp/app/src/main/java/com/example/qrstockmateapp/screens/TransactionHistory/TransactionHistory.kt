@@ -1,8 +1,14 @@
 package com.example.qrstockmateapp.screens.TransactionHistory
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -34,7 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
+import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.models.operationToString
@@ -162,7 +172,7 @@ fun downloadTransactionList(context: Context, transactionList: List<Transaction>
                     fos.write(line.toByteArray())
                 }
             }
-
+            showNotification(context, "Download Complete", "File saved in $externalDir", file)
             Toast.makeText(context, "successful download in ${externalDir}", Toast.LENGTH_SHORT).show()
         } else {
             // El almacenamiento externo no está disponible
@@ -180,6 +190,43 @@ private fun isExternalStorageWritable(): Boolean {
     return Environment.MEDIA_MOUNTED == state
 }
 
-private fun getExternalStorageDir(): File? {
-    return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+private fun showNotification(context: Context, title: String, message: String, file: File) {
+    val notificationManager = ContextCompat.getSystemService(
+        context,
+        NotificationManager::class.java
+    ) as NotificationManager?
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        // Crear un canal de notificación para versiones de Android 8.0 y superiores
+        val channel = NotificationChannel(
+            "default",
+            "Downloads",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationManager?.createNotificationChannel(channel)
+    }
+
+    val notificationIntent = Intent(Intent.ACTION_VIEW)
+    val uri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
+    Log.d("URI", "${uri}")
+    notificationIntent.setDataAndType(uri, "text/plain")
+    notificationIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+    val pendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        notificationIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+
+    val notification = NotificationCompat.Builder(context, "default")
+        .setContentTitle(title)
+        .setContentText(message)
+        .setSmallIcon(R.drawable.icon)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+        .build()
+
+    notificationManager?.notify(1, notification)
 }

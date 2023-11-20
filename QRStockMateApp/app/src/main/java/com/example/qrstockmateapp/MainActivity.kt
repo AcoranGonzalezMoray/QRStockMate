@@ -1,12 +1,17 @@
 package com.example.qrstockmateapp
 
 import android.Manifest
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -21,13 +26,21 @@ import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+
             if (isCameraPermissionGranted()) {
 
             } else {
@@ -39,7 +52,16 @@ class MainActivity : ComponentActivity() {
             }
         setContent {
             val navController = rememberNavController()
-            NavigationContent(navController)
+            // Verificar si hay un token y un usuario almacenados
+            val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
+            val savedUserJson = sharedPreferences.getString(KEY_USER, null)
+            Log.d("savedToken", "${savedToken}, ${savedUserJson}")
+            if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
+                val savedUser = Gson().fromJson(savedUserJson, User::class.java)
+                navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
+            } else {
+                NavigationContent(navController,::saveTokenAndUser,sharedPreferences)
+            }
         }
 
     }
@@ -64,29 +86,40 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
-
+    private fun saveTokenAndUser(token: String, user: User) {
+        Log.d("LLAVE","${user}")
+        with(sharedPreferences.edit()) {
+            putString(KEY_TOKEN, token)
+            putString(KEY_USER, Gson().toJson(user))
+            apply()
+        }
+    }
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val PERMISSION_CAMERA_REQUEST = 1
+        private const val KEY_TOKEN = "TOKEN_KEY"
+        private const val KEY_USER = "USER_KEY"
     }
 }
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavigationContent(navController: NavHostController) {
-    Navigation(navController)
-}
-
-
-@Composable
-fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "login") {
+fun navigateToBottomScreen(
+    navController: NavHostController,
+    savedUser: User,
+    savedToken: String,
+    onSaveTokenAndUser: (String, User) -> Unit,
+    sharedPreferences: SharedPreferences
+) {
+    NavHost(navController = navController, startDestination = "bottomScreen"){
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
                 if (loggedIn) {
                     // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
+                        //se guarda aqui shared prefe
                         Initializaton(user = user, token=token)
+                        onSaveTokenAndUser(token, user)
                         navController.navigate("bottomScreen")
                     }
                 }
@@ -107,13 +140,69 @@ fun Navigation(navController: NavHostController) {
 
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
-            BottomNavigationScreen(navController)
+            BottomNavigationScreen(navController,sharedPreferences)
+        }
+    }
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.Main) {
+            Initializaton(user = savedUser, token = savedToken)
+            navController.navigate("bottomScreen")
+        }
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun NavigationContent(
+    navController: NavHostController,
+    onSaveTokenAndUser: (String, User) -> Unit,
+    sharedPreferences: SharedPreferences
+) {
+    Navigation(navController,onSaveTokenAndUser,sharedPreferences)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, User) -> Unit,sharedPreferences: SharedPreferences) {
+    NavHost(navController = navController, startDestination = "login") {
+        // Pantallas de Autenticacion
+        composable("login") {
+            Login(navController = navController) { loggedIn,user,token ->
+                if (loggedIn) {
+                    // Ejecutar la navegación en el hilo principal
+                    CoroutineScope(Dispatchers.Main).launch {
+                        //se guarda aqui shared prefe
+                        Initializaton(user = user, token=token)
+                        onSaveTokenAndUser(token, user)
+                        navController.navigate("bottomScreen")
+                    }
+                }
+            }
+        }
+
+        composable("forgotPassword"){
+            ForgotPassword(navController = navController) {}
+        }
+
+        composable("joinWithCode"){
+            JoinWithCodeScreen(navController = navController)
+        }
+
+        composable("signUp"){
+            SignUpScreen(navController = navController)
+        }
+
+        //Aplicacion Con sus Funciones
+        composable("bottomScreen") {
+            BottomNavigationScreen(navController,sharedPreferences)
         }
     }
 }
 
 suspend fun Initializaton(user: User, token:String){
-    DataRepository.setUser(user)
+
     DataRepository.setToken(token)
 
     val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
@@ -129,7 +218,10 @@ suspend fun Initializaton(user: User, token:String){
         if (employeesResponse.isSuccessful) {
             val employees = employeesResponse.body()
             Log.d("EMPLOYEE", "${employees}")
-            if(employees!=null)DataRepository.setEmployees(employees)
+            if(employees!=null){
+                DataRepository.setEmployees(employees)
+                employees.find { it.id == user.id }?.let { DataRepository.setUser(it) }
+            }
         } else Log.d("compnayError", "error")
     }
 
