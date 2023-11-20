@@ -57,7 +57,9 @@ fun TransactionHistoryScreen(navController: NavController) {
             val response  = RetrofitInstance.api.getHistory()
             if(response.isSuccessful){
                 val responseBody = response.body()
-                if(responseBody!=null)transactionList = responseBody
+                if(responseBody!=null){
+                    transactionList = responseBody.filter { it.code == DataRepository.getUser()?.code }
+                }
             }
         }
     }

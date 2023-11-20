@@ -305,17 +305,22 @@ fun AddItemScreen(navController: NavController) {
                             Log.d("New Stock", "${newStock}")
                             var newItem = item
                             if (newItem != null) {
-                                if (newStock != null && newStock>=0) {
-                                    newItem.stock = newStock
-                                    newItem.warehouseId = selectedOption.split(':')[2].toInt()
-                                    newItem.location =  location
-                                    newItem.name = name
-                                    addItem(newItem)
-                                    availableCount = newStock
-                                    count = 0
+                                if(selectedOption != "Select a warehouse to add your product"){
+                                    if (newStock != null && newStock>=0) {
+                                        newItem.stock = newStock
+                                        newItem.warehouseId = selectedOption.split(':')[2].toInt()
+                                        newItem.location =  location
+                                        newItem.name = name
+                                        addItem(newItem)
+                                        availableCount = newStock
+                                        count = 0
+                                    }else{
+                                        Toast.makeText(context, "There cannot be a negative stock", Toast.LENGTH_SHORT).show()
+                                    }
                                 }else{
-                                    Toast.makeText(context, "There cannot be a negative stock", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "You must assign this item to a warehouse", Toast.LENGTH_SHORT).show()
                                 }
+
                             }
                         },
                     ) {

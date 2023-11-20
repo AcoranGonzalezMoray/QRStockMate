@@ -107,7 +107,7 @@ fun OpenWarehouseScreen(navController: NavController){
         backgroundColor = Color.LightGray
     )
 
-    Column() {
+    Column(modifier = Modifier .padding(16.dp)) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },

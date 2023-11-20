@@ -205,7 +205,7 @@ fun UpdateUserScreen(navController: NavController) {
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "The image of the ${userC?.name} user has been modified",
+                                Transaction(0,user.name,user.code, "The data of the ${userC?.name} user has been modified",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
