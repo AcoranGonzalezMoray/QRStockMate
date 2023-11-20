@@ -1,11 +1,15 @@
 package com.example.qrstockmateapp
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,22 +38,23 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
-
+    private val POST_NOTIFICATION_REQUEST_CODE = 123 // Puedes usar cualquier número que desees
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
-            if (isCameraPermissionGranted()) {
 
-            } else {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.CAMERA),
-                    PERMISSION_CAMERA_REQUEST
-                )
-            }
+        checkAndRequestNotificationPermission()
+        if (isCameraPermissionGranted()) { }
+        else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                PERMISSION_CAMERA_REQUEST
+            )
+        }
         setContent {
             val navController = rememberNavController()
             // Verificar si hay un token y un usuario almacenados
@@ -65,6 +70,53 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+    private fun checkAndRequestNotificationPermission() {
+        // Verificar si ya tienes permisos
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE
+                ) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                // Si no tienes el permiso, verifica si se deben mostrar explicaciones
+                if (shouldShowRequestPermissionRationale(Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
+                    // Aquí puedes mostrar un mensaje explicativo al usuario si es necesario
+
+                } else {
+                    // Lleva al usuario a la configuración de la aplicación para otorgar los permisos
+                    showDialogWithExplanation()
+
+                }
+            } else {
+                // El permiso ya está concedido, realiza las acciones necesarias aquí
+            }
+        }
+    }
+
+    private fun showDialogWithExplanation() {
+        // Here you can display a dialog or an explanatory message to the user
+        // indicating why you need the permission and how they can grant it.
+
+        // For example, you can use an AlertDialog:
+        AlertDialog.Builder(this)
+            .setTitle("Notification Permission Required")
+            .setMessage("To receive notifications, we need your permission. Please grant it in the app settings.")
+            .setPositiveButton("Go to Settings") { _, _ ->
+                // Take the user to the app settings to grant permissions
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri: Uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // The user decided to cancel the permission request
+                // You can perform alternative actions or simply close the dialog
+            }
+            .show()
+    }
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,

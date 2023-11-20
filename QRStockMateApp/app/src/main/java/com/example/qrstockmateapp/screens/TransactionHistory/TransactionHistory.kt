@@ -173,7 +173,7 @@ fun downloadTransactionList(context: Context, transactionList: List<Transaction>
                 }
             }
             showNotification(context, "Download Complete", "File saved in $externalDir", file)
-            Toast.makeText(context, "successful download in ${externalDir}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "successful download in ${externalDir}", Toast.LENGTH_SHORT).show()
         } else {
             // El almacenamiento externo no está disponible
             // Maneja el caso en el que no se puede escribir en el almacenamiento externo
