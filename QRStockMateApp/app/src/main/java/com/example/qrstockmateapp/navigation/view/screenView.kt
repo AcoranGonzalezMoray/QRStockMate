@@ -183,9 +183,9 @@ fun Drawer(
                                 sharedPreferences.edit().clear().apply()
                                 deleteAccount()
                                 showDialog = false
-                            }
+                            }, colors = ButtonDefaults.buttonColors(Color.Black)
                         ) {
-                            Text("Confirm")
+                            Text("Confirm", color = Color.White)
                         }
                     },
                     dismissButton = {
@@ -193,9 +193,9 @@ fun Drawer(
                             onClick = {
                                 // Handle dismissal action (e.g., cancel)
                                 showDialog = false
-                            }
+                            }, colors = ButtonDefaults.buttonColors(Color.Red)
                         ) {
-                            Text("Cancel")
+                            Text("Cancel",  color = Color.White)
                         }
                     }
                 )

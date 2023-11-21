@@ -95,7 +95,22 @@ fun AddItemScreen(navController: NavController) {
     var name by remember { mutableStateOf(item?.name.toString()) }
 
     LaunchedEffect(Unit) {
-        warehouses = DataRepository.getWarehouses()!!
+        val companyResponse = RetrofitInstance.api.getCompanyByUser(DataRepository.getUser()!!)
+        if (companyResponse.isSuccessful) {
+            val company = companyResponse.body()
+            if (company != null) {
+                DataRepository.setCompany(company)
+                val warehouseResponse = RetrofitInstance.api.getWarehouse(company)
+
+                if (warehouseResponse.isSuccessful) {
+                    val warehousesIO = warehouseResponse.body()
+                    if (warehousesIO != null) {
+                        DataRepository.setWarehouses(warehousesIO)
+                        warehouses = warehousesIO
+                    }
+                }
+            }
+        }
     }
 
     val addItem : (item:Item) -> Unit = {
@@ -322,7 +337,7 @@ fun AddItemScreen(navController: NavController) {
                                 }
 
                             }
-                        },
+                        },colors = ButtonDefaults.buttonColors(Color.Black)
                     ) {
                         androidx.compose.material.Text("Add", color = Color.White)
                     }

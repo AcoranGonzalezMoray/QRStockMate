@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -125,6 +126,7 @@ fun HomeScreen(navController: NavController) {
 
     if(user !=null){
         LaunchedEffect(Unit) {
+            isloading = true
             val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
             if (companyResponse.isSuccessful) {
                 val company = companyResponse.body()
@@ -148,6 +150,8 @@ fun HomeScreen(navController: NavController) {
                     }
                 }
             }
+            delay(1100)
+            isloading = false
         }
     }
 
@@ -182,6 +186,7 @@ fun HomeScreen(navController: NavController) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadWarehouse: ()->Unit) {
     LazyColumn {
@@ -381,7 +386,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             Icon(
                                 imageVector = Icons.Filled.Create,
                                 contentDescription = "",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     }
@@ -397,7 +402,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             Icon(
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = "",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     }
@@ -410,7 +415,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                               },
                     modifier = Modifier
                         .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Green),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
                 ) {
                     Text(text = "Open", color = Color.White)
                 }

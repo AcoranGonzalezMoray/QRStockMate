@@ -213,7 +213,7 @@ fun Item(item: Item,navController: NavController) {
                         DataRepository.setItem(item)
                         navController.navigate("itemDetails")
                     }
-                },colors = ButtonDefaults.buttonColors(Color.Green)) {
+                },colors = ButtonDefaults.buttonColors(Color.Black)) {
                     Text(text = "Open", color = Color.White)
                 }
             }

@@ -240,9 +240,9 @@ fun Item(item: Item,navController: NavController) {
                            Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
                        }
                     },
-                    colors = ButtonDefaults.buttonColors(Color.Green)
+                    colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {
-                    Text("Open")
+                    Text("Open", color = Color.White)
                 }
             }
         }

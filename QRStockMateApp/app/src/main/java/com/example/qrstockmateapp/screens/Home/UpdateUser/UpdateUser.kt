@@ -91,7 +91,7 @@ fun UpdateUserScreen(navController: NavController) {
                     val employeesResponse = RetrofitInstance.api.getEmployees(cm)
                     if (employeesResponse.isSuccessful) {
                         val employeesIO = employeesResponse.body()
-                        val me = employeesIO?.find {it.id == userId  }
+                        val me = employeesIO?.find {it.id == DataRepository.getUser()!!.id }
                         if(me!=null)DataRepository.setUser(me)
                     }
                 }
@@ -196,7 +196,7 @@ fun UpdateUserScreen(navController: NavController) {
                             val employeesResponse = RetrofitInstance.api.getEmployees(cm)
                             if (employeesResponse.isSuccessful) {
                                 val employeesIO = employeesResponse.body()
-                                val me = employeesIO?.find {it.id == user.id  }
+                                val me = employeesIO?.find {it.id == DataRepository.getUser()!!.id  }
                                 if(me!=null)DataRepository.setUser(me)
                             }
                         }

@@ -268,7 +268,7 @@ fun ItemDetailsScreen(navController: NavController) {
                                     Toast.makeText(context, "There cannot be a negative stock", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        },
+                        }, colors = ButtonDefaults.buttonColors(Color.Black)
                     ) {
                         androidx.compose.material.Text("Update", color = Color.White)
                     }
