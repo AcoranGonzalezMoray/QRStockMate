@@ -5,9 +5,11 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.logic.Navigation
@@ -81,24 +86,34 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             TopAppBar(
                 backgroundColor = Color.Black,
                 title = {
-                    Text(text = "QRSTOCKMATE",color = Color.White)},
+                    // Colocar la imagen en el centro
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(10.dp).padding(end = 66.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_white),
+                            contentDescription = "",
+                            colorFilter = ColorFilter.tint(Color.White) // Invertir colores de la imagen
+                        )
+                    }
+                },
                 navigationIcon = {
-
+                    // Ícono de menú para abrir el cajón de navegación
                     IconButton(onClick = {
                         scope.launch {
                             scaffoldState.drawerState.open()
                         }
-                    })
-
-                    {
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "",
-                            tint = Color.White)
+                            tint = Color.White
+                        )
                     }
                 }
-
             )
+
 
 
         },
@@ -317,7 +332,10 @@ fun Drawer(
                     .fillMaxWidth()
                     .clickable(onClick = {
                         DataRepository.LogOut()
-                        sharedPreferences.edit().clear().apply()
+                        sharedPreferences
+                            .edit()
+                            .clear()
+                            .apply()
                         navControllerLogin.navigate("login")
                         scope.launch { scaffoldState.drawerState.close() }
 
