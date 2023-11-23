@@ -374,7 +374,8 @@ fun UpdateUserScreen(navController: NavController) {
                                 .fillMaxWidth()) {
                             Text(text = "Cancel",color = Color.White)
                         }
-                        Button(modifier = Modifier
+                        Button(colors = ButtonDefaults.buttonColors(Color.Black),
+                            modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
                             onClick = {

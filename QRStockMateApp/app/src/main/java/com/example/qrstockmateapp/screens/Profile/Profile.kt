@@ -332,7 +332,7 @@ fun ProfileScreen(navController: NavController) {
             },
                 colors = ButtonDefaults.buttonColors(Color.Black),
             ) {
-                Text(text = "Update")
+                Text(text = "Update", color=Color.White)
             }
         }
     }
