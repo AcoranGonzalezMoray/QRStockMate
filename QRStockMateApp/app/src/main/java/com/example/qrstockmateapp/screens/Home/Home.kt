@@ -365,7 +365,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
                 //Administrador
                 Text(
-                    text = "Organization: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
+                    text = "Administrator: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
