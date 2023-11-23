@@ -25,8 +25,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,6 +68,29 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionHistoryScreen(navController: NavController) {
     var transactionList by remember { mutableStateOf(emptyList<Transaction>()) }
+    var searchQuery by remember { mutableStateOf("") };
+
+    val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        cursorColor = Color.Black,
+        focusedBorderColor = Color.Black,
+        focusedLabelColor = Color.Black,
+        unfocusedBorderColor = Color.Black,
+        backgroundColor = Color.LightGray
+    )
+
+    var filteredItems = if (searchQuery.isEmpty()) {
+        transactionList
+    } else {
+        transactionList.filter { item->
+            item.name.contains(searchQuery, ignoreCase = true) ||
+                    item.id.toString().contains(searchQuery, ignoreCase = true) ||
+                    item.code.contains(searchQuery, ignoreCase = true)||
+                    item.created.contains(searchQuery, ignoreCase = true)||
+                    item.name.contains(searchQuery, ignoreCase = true)||
+                    item.description.contains(searchQuery, ignoreCase = true)||
+                    item.operation.toString().contains(searchQuery, ignoreCase = true)
+        }
+    }
 
     LaunchedEffect(Unit){
         GlobalScope.launch(Dispatchers.IO) {
@@ -83,16 +109,25 @@ fun TransactionHistoryScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .padding(16.dp)
     ) {
         if(DataRepository.getUser()?.role!=3){
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Search") },
+                colors = customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
             Button(modifier = Modifier.align(Alignment.CenterHorizontally),onClick = {
                 downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
             }) {
                 Text(text = "Download")
             }
             LazyColumn {
-                items(transactionList) { transaction ->
+                items(filteredItems) { transaction ->
                     TransactionListItem(transaction = transaction)
                 }
             }

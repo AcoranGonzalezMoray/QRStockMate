@@ -63,7 +63,10 @@ import com.example.qrstockmateapp.screens.Home.ManageUser.UserListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
+enum class SortOrder {
+    ASCENDING,
+    DESCENDING
+}
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(navController: NavController) {
@@ -72,7 +75,9 @@ fun SearchScreen(navController: NavController) {
     var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
     var searchQuery by remember { mutableStateOf("") };
 
-    val filteredItems = if (searchQuery.isEmpty()) {
+    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
+
+    var filteredItems = if (searchQuery.isEmpty()) {
         listaItems
     } else {
         listaItems.filter { item->
@@ -117,6 +122,8 @@ fun SearchScreen(navController: NavController) {
         backgroundColor = Color.LightGray
     )
 
+    val sortedItems = sortItems(filteredItems, sortOrder)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -132,9 +139,19 @@ fun SearchScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(bottom = 12.dp)
         )
-
+        Button( colors = ButtonDefaults.buttonColors(Color.Black),
+            onClick = {
+            // Cambiar el orden de la lista al hacer clic en el botón
+            sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+            filteredItems = filteredItems.sortedBy { it.stock }  // Cambia esto a tu criterio de ordenación
+            if (sortOrder == SortOrder.DESCENDING) {
+                filteredItems = filteredItems.reversed()
+            }
+        }) {
+            Text(color= Color.White,text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending")
+        }
         if(filteredItems.isNotEmpty()){
-            ItemList(items = filteredItems, navController = navController)
+            ItemList(items = sortedItems, navController = navController)
 
         }else{
             Box {
@@ -246,5 +263,13 @@ fun Item(item: Item,navController: NavController) {
                 }
             }
         }
+    }
+}
+
+
+fun sortItems(items: List<Item>, sortOrder: SortOrder): List<Item> {
+    return when (sortOrder) {
+        SortOrder.ASCENDING -> items.sortedBy { it.stock }
+        SortOrder.DESCENDING -> items.sortedByDescending { it.stock }
     }
 }
