@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.qrstockmateapp.R
@@ -332,10 +333,10 @@ fun Drawer(
                     .fillMaxWidth()
                     .clickable(onClick = {
                         DataRepository.LogOut()
-                        sharedPreferences
-                            .edit()
-                            .clear()
-                            .apply()
+                        sharedPreferences.edit {
+                            remove("TOKEN_KEY")
+                            remove("USER_KEY")
+                        }
                         navControllerLogin.navigate("login")
                         scope.launch { scaffoldState.drawerState.close() }
 

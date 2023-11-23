@@ -169,7 +169,7 @@ fun AddItemScreen(navController: NavController) {
                 .wrapContentSize(Alignment.Center)
         ) {
             var name by remember { mutableStateOf(item?.name) }
-            Text(text = name.toString(),
+            Text(text =  "Name: "+name.toString(),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)

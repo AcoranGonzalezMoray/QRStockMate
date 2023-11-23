@@ -1,8 +1,11 @@
 package com.example.qrstockmateapp.screens.Search.ItemDetails
 
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +64,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -81,6 +88,67 @@ fun ItemDetailsScreen(navController: NavController) {
         unfocusedBorderColor = Color.Black,
         backgroundColor = Color.LightGray
     )
+
+    val updateImage:(File)->Unit={ file ->
+        GlobalScope.launch(Dispatchers.IO){
+            try {
+
+                val itemId =item?.id
+                val itemIdRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), itemId.toString())
+
+                // Crea RequestBody y MultipartBody.Part con el archivo de imagen seleccionado
+                val imageRequestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+                val imagePart = MultipartBody.Part.createFormData("image", file.name, imageRequestBody)
+
+                withContext(Dispatchers.Main){
+                    Toast.makeText(context, "loading...", Toast.LENGTH_SHORT).show()
+                }
+
+                val imageResponse =  RetrofitInstance.api.updateImageItem(itemIdRequestBody, imagePart)
+                if(imageResponse.isSuccessful){
+                    withContext(Dispatchers.Main){
+                        navController.navigate("search")
+                    }
+                }else{
+                    try {
+                        val errorBody = imageResponse.errorBody()?.string()
+                        Log.e("excepcionUserB", "$errorBody")
+                    } catch (e: Exception) {
+                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                    }
+                }
+
+            }catch (e: Exception){
+                Log.d("ExceptionImage", "${e}")
+            }
+        }
+    }
+
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            // El usuario seleccionó una imagen, realiza el procesamiento aquí
+            if (uri != null) {
+                // Haz algo con la URI de la imagen, como cargarla en tu aplicación
+                // Luego, envía la imagen a la API
+                val imageFile = uri?.let { uri ->
+                    try {
+                        val inputStream = context.contentResolver.openInputStream(uri)
+                        val file = createTempFile("image", null, context.cacheDir)
+                        file.outputStream().use { output ->
+                            inputStream?.copyTo(output)
+                        }
+                        file
+                    } catch (e: Exception) {
+                        Log.e("ImageFileException", "Error al obtener el archivo de imagen: $e")
+                        null
+                    }
+                }
+                if (imageFile!=null) updateImage(imageFile)
+
+                // Por ejemplo, puedes mostrar el nombre del archivo seleccionado
+                Toast.makeText(context, "Selected Image: ${imageFile?.name}", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     val updateStock : (item:Item) -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -132,7 +200,7 @@ fun ItemDetailsScreen(navController: NavController) {
                 .wrapContentSize(Alignment.Center)
         ) {
             var name by remember { mutableStateOf(item?.name) }
-            Text(text = name.toString(),
+            Text(text = "Name: "+name.toString(),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
@@ -142,6 +210,20 @@ fun ItemDetailsScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            Box(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .align(alignment = Alignment.CenterStart),
+                    onClick = { pickImageLauncher.launch("image/*") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
+            }
             if(item!=null && !item.url.isNullOrBlank()){
                 val painter = rememberImagePainter(
                     data = item.url,
