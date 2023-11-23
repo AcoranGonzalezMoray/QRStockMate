@@ -82,7 +82,7 @@ fun AddWarehouseScreen(navController: NavController) {
                         if(user!=null){
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                            val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.name,user.code, "a warehouse has been added",
+                            val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a warehouse has been added",
                                 formattedDate , 0))
                             if(addTransaccion.isSuccessful){
                                 Log.d("Transaccion", "OK")

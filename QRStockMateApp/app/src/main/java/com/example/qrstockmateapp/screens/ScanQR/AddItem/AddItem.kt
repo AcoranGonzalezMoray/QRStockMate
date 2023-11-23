@@ -76,7 +76,7 @@ fun AddItemScreen(navController: NavController) {
     var availableCount by remember { mutableStateOf(item?.stock) }
     val availableState = rememberUpdatedState(availableCount)
     var count by remember { mutableStateOf(0) }
-    val countState = rememberUpdatedState(count)
+    var countState = rememberUpdatedState(count)
     val context = LocalContext.current
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         cursorColor = Color.Black,
@@ -124,7 +124,7 @@ fun AddItemScreen(navController: NavController) {
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "An item,${item.name} , has been added to the warehouse with id ${item.warehouseId}",
+                                Transaction(0,user.id.toString(),user.code, "An item,${item.name} , has been added to the warehouse with id ${item.warehouseId}",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
@@ -169,7 +169,7 @@ fun AddItemScreen(navController: NavController) {
                 .wrapContentSize(Alignment.Center)
         ) {
             var name by remember { mutableStateOf(item?.name) }
-            Text(text = name.toString(),
+            Text(text =  "Name: "+name.toString(),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
@@ -282,30 +282,38 @@ fun AddItemScreen(navController: NavController) {
                 )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(
-                        onClick = {
-                            count--
-                        },
-                        colors = ButtonDefaults.buttonColors(Color.Cyan)
-                    ) {
-                        androidx.compose.material.Text("-")
+                    Column {
+                        Button(
+                            onClick = {
+                                count++
+                            },
+                            colors = ButtonDefaults.buttonColors(Color.Cyan)
+                        ) {
+                            androidx.compose.material.Text("+")
+                        }
+                        Button(
+                            onClick = {
+                                count--
+                            },
+                            colors = ButtonDefaults.buttonColors(Color.Cyan)
+                        ) {
+                            androidx.compose.material.Text("-")
+                        }
                     }
-                    Text(text = countState.value.toString(),
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Button(
-                        onClick = {
-                            count++
+                    TextField(
+                        value = countState.value.toString(),
+                        onValueChange = { newValue ->
+                            count = newValue.toIntOrNull() ?: 0
                         },
-                        colors = ButtonDefaults.buttonColors(Color.Cyan)
-                    ) {
-                        androidx.compose.material.Text("+")
-                    }
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .width(60.dp)
+                            .height(55.dp)
 
+                    )
                     Spacer(modifier = Modifier.width(20.dp))
                     Button(onClick = {
                         navController.popBackStack()

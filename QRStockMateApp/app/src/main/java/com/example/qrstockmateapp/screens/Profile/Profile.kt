@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.screens.Profile
 
 import android.net.Uri
 import android.util.Log
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +21,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,11 +75,36 @@ fun ProfileScreen(navController: NavController) {
     val userId = user?.id
     val userName = user?.name
     val userCode = user?.code
-    val userEmail = user?.email
-    val userPhone = user?.phone
     val userRole = user?.role
+    var userEmail by remember { mutableStateOf(user?.email) }
+    var userPhone by remember { mutableStateOf(user?.phone) }
 
     val placeholderImage = painterResource(id = R.drawable.user)
+    val updateInfo:()->Unit={
+        GlobalScope.launch(Dispatchers.IO){
+            var userMod = user
+            userMod?.email = userEmail.toString()
+            userMod?.phone = userPhone.toString()
+            if(userMod!=null){
+                val response = RetrofitInstance.api.updateUser(userMod)
+                if(response.isSuccessful){
+                    DataRepository.setUser(userMod)
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "satisfactory update", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        cursorColor = Color.Black,
+        focusedBorderColor = Color.Black,
+        focusedLabelColor = Color.Black,
+        unfocusedBorderColor = Color.Black,
+        backgroundColor = Color.LightGray
+    )
+
     val updateImage:(File)->Unit={ file ->
         GlobalScope.launch(Dispatchers.IO){
             try {
@@ -155,8 +191,10 @@ fun ProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-    ) {
-        Box(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+        ) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)) {
             Button(
                 modifier = Modifier
                     .padding(top = 8.dp)
@@ -220,76 +258,82 @@ fun ProfileScreen(navController: NavController) {
                     .wrapContentWidth(Alignment.CenterHorizontally)
             )
         }
-        Spacer(modifier = Modifier.height(30.dp))   //ESpacio entre Imagen & Nombre y Info de Usuario
-
-        Column(     //Info de el Usuario(Role, Email, Telefono, Codigo, Id)
+        Spacer(modifier = Modifier.height(30.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
+        if (userRole != null) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Role: ")
+                    }
+                    append(userRoleToString(userRole))
+                },
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 10.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(15.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
+        if (userCode != null) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Warehouse Code: ")
+                    }
+                    append(userCode)
+                },
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 10.dp)
+            )
+        }
+        Column(
             modifier = Modifier
-                .fillMaxSize(0.6f),
-                verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Center,
         ) {
-            if (userRole != null) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Role: ")
-                        }
-                        append(userRoleToString(userRole))
-                    },
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-            }
 
             Spacer(modifier = Modifier.height(20.dp))
-
             if (userEmail != null) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Email: ")
-                        }
-                        append(userEmail)
-                    },
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 10.dp)
+                TextField(
+                    value = userEmail!!,
+                    colors = customTextFieldColors,
+                    onValueChange = {userEmail = it},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    readOnly = false
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             if (userPhone != null) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Phone Number: ")
-                        }
-                        append(userPhone)
-                    },
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 10.dp)
+                TextField(
+                    value = userPhone!!,
+                    colors = customTextFieldColors,
+                    onValueChange = {userPhone=it},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    readOnly = false
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            if (userCode != null) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Warehouse Code: ")
-                        }
-                        append(userCode)
-                    },
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 10.dp)
-                )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = {
+                updateInfo()
+            },
+                colors = ButtonDefaults.buttonColors(Color.Black),
+            ) {
+                Text(text = "Update", color=Color.White)
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 

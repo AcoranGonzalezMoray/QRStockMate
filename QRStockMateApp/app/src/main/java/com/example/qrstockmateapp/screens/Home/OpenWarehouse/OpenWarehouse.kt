@@ -47,6 +47,8 @@ import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.screens.Search.SortOrder
+import com.example.qrstockmateapp.screens.Search.sortItems
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -58,8 +60,9 @@ fun OpenWarehouseScreen(navController: NavController){
     val context = LocalContext.current
     var items by remember { mutableStateOf(emptyList<Item>()) }
     var searchQuery by remember { mutableStateOf("") }
+    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
 
-    val filteredItems = if (searchQuery.isEmpty()) {
+    var filteredItems = if (searchQuery.isEmpty()) {
         items
     } else {
         items.filter { item->
@@ -98,6 +101,7 @@ fun OpenWarehouseScreen(navController: NavController){
 
         }
     }
+    val sortedItems = sortItems(filteredItems, sortOrder)
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         cursorColor = Color.Black,
@@ -107,7 +111,9 @@ fun OpenWarehouseScreen(navController: NavController){
         backgroundColor = Color.LightGray
     )
 
-    Column(modifier = Modifier .padding(16.dp)) {
+    Column(modifier = Modifier .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -117,8 +123,21 @@ fun OpenWarehouseScreen(navController: NavController){
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         )
-
-        ItemList(items = filteredItems , navController = navController)
+        Button( colors = ButtonDefaults.buttonColors(Color.Black),
+            onClick = {
+                // Cambiar el orden de la lista al hacer clic en el botón
+                sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                filteredItems = filteredItems.sortedBy { it.stock }  // Cambia esto a tu criterio de ordenación
+                if (sortOrder == SortOrder.DESCENDING) {
+                    filteredItems = filteredItems.reversed()
+                }
+            }) {
+            androidx.compose.material.Text(
+                color = Color.White,
+                text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending"
+            )
+        }
+        ItemList(items = sortedItems  , navController = navController)
     }
 
 
@@ -137,6 +156,7 @@ fun ItemList(items: List<Item>,navController: NavController) {
 
 @Composable
 fun Item(item: Item,navController: NavController) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,6 +232,8 @@ fun Item(item: Item,navController: NavController) {
                     if(DataRepository.getUser()?.role!=3){
                         DataRepository.setItem(item)
                         navController.navigate("itemDetails")
+                    }else{
+                        Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
                     }
                 },colors = ButtonDefaults.buttonColors(Color.Black)) {
                     Text(text = "Open", color = Color.White)

@@ -25,8 +25,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,14 +56,41 @@ import com.example.qrstockmateapp.navigation.repository.DataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransactionHistoryScreen(navController: NavController) {
     var transactionList by remember { mutableStateOf(emptyList<Transaction>()) }
+    var searchQuery by remember { mutableStateOf("") };
+
+    val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        cursorColor = Color.Black,
+        focusedBorderColor = Color.Black,
+        focusedLabelColor = Color.Black,
+        unfocusedBorderColor = Color.Black,
+        backgroundColor = Color.LightGray
+    )
+
+    var filteredItems = if (searchQuery.isEmpty()) {
+        transactionList
+    } else {
+        transactionList.filter { item->
+            item.name.contains(searchQuery, ignoreCase = true) ||
+                    item.id.toString().contains(searchQuery, ignoreCase = true) ||
+                    item.code.contains(searchQuery, ignoreCase = true)||
+                    item.created.contains(searchQuery, ignoreCase = true)||
+                    item.name.contains(searchQuery, ignoreCase = true)||
+                    item.description.contains(searchQuery, ignoreCase = true)||
+                    item.operation.toString().contains(searchQuery, ignoreCase = true)
+        }
+    }
 
     LaunchedEffect(Unit){
         GlobalScope.launch(Dispatchers.IO) {
@@ -79,16 +109,25 @@ fun TransactionHistoryScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .padding(16.dp)
     ) {
         if(DataRepository.getUser()?.role!=3){
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Search") },
+                colors = customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
             Button(modifier = Modifier.align(Alignment.CenterHorizontally),onClick = {
-                downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.txt")
+                downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
             }) {
                 Text(text = "Download")
             }
             LazyColumn {
-                items(transactionList) { transaction ->
+                items(filteredItems) { transaction ->
                     TransactionListItem(transaction = transaction)
                 }
             }
@@ -125,7 +164,7 @@ fun TransactionListItem(transaction: Transaction) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Name: ${transaction.name}",
+                text = "USER: ${transaction.name}",
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onSurface
             )
@@ -159,29 +198,46 @@ fun TransactionListItem(transaction: Transaction) {
 
 fun downloadTransactionList(context: Context, transactionList: List<Transaction>, fileName: String) {
     try {
-        // Verifica si el almacenamiento externo está disponible para escribir
         if (isExternalStorageWritable()) {
             val externalDir = context.getExternalFilesDir(null)
             val file = File(externalDir, fileName)
 
-            // Abre un flujo de salida para escribir en el archivo
-            FileOutputStream(file).use { fos ->
-                // Itera sobre la lista de transacciones y escribe en el archivo
-                for (transaction in transactionList) {
-                    val line = "ID: ${transaction.id}, Name: ${transaction.name}, Code: ${transaction.code}, Description: ${transaction.description}, Created: ${transaction.created}, Operation: ${operationToString(transaction.operation)}   \n"
-                    fos.write(line.toByteArray())
-                }
+            // Crea un libro de trabajo de Excel
+            val workbook = XSSFWorkbook()
+            val sheet = workbook.createSheet("Transaction Data")
+
+            // Crea el encabezado de la hoja de cálculo
+            val headerRow: Row = sheet.createRow(0)
+            val headers = arrayOf("ID", "User", "Code", "Description", "Created", "Operation")
+            for ((index, header) in headers.withIndex()) {
+                val cell: Cell = headerRow.createCell(index)
+                cell.setCellValue(header)
             }
+            // Llena la hoja de cálculo con datos de transacciones
+            for ((rowIndex, transaction) in transactionList.withIndex()) {
+                val row: Row = sheet.createRow(rowIndex + 1)
+
+                row.createCell(0).setCellValue("${transaction.id}")
+                row.createCell(1).setCellValue(transaction.name)
+                row.createCell(2).setCellValue(transaction.code)
+                row.createCell(3).setCellValue(transaction.description)
+                row.createCell(4).setCellValue(transaction.created) // Convierte LocalDateTime a String
+                row.createCell(5).setCellValue(operationToString(transaction.operation))
+            }
+
+            // Guarda el libro de trabajo en el archivo
+            FileOutputStream(file).use { fos ->
+                workbook.write(fos)
+            }
+
+            workbook.close()
+
             showNotification(context, "Download Complete", "File saved in $externalDir", file)
-            //Toast.makeText(context, "successful download in ${externalDir}", Toast.LENGTH_SHORT).show()
         } else {
-            // El almacenamiento externo no está disponible
             // Maneja el caso en el que no se puede escribir en el almacenamiento externo
         }
     } catch (e: Exception) {
-        // Maneja excepciones, como IOException
         e.printStackTrace()
-        // Puedes mostrar un mensaje de error o realizar otras acciones según sea necesario
     }
 }
 

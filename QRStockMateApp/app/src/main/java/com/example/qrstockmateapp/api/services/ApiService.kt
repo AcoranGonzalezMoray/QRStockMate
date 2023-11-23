@@ -85,7 +85,12 @@ interface ApiService {
         @Part("userId") userId: RequestBody,
         @Part image: MultipartBody.Part
     ):Response<Void>
-
+    @Multipart
+    @POST("Item/UpdateImage")
+    suspend fun updateImageItem(
+        @Part("itemId") itemId: RequestBody,
+        @Part image: MultipartBody.Part
+    ):Response<Void>
     @HTTP(method = "DELETE", path = "Warehouse/{idCompany}", hasBody = true) //Para un Delete con Body hay que hacerlo asi
     suspend fun deleteWarehouse(
         @Path("idCompany") id: Int,

@@ -39,14 +39,18 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private val POST_NOTIFICATION_REQUEST_CODE = 123 // Puedes usar cualquier número que desees
+    private val NOTIFICATION_PERMISSION_REQUESTED = "notification_permission_requested"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
+        if (!sharedPreferences.getBoolean(NOTIFICATION_PERMISSION_REQUESTED, false)) {
+            checkAndRequestNotificationPermission()
+        }
 
-        checkAndRequestNotificationPermission()
+
         if (isCameraPermissionGranted()) { }
         else {
             ActivityCompat.requestPermissions(
@@ -86,10 +90,12 @@ class MainActivity : ComponentActivity() {
                 } else {
                     // Lleva al usuario a la configuración de la aplicación para otorgar los permisos
                     showDialogWithExplanation()
+                    sharedPreferences.edit().putBoolean(NOTIFICATION_PERMISSION_REQUESTED, true).apply()
 
                 }
             } else {
                 // El permiso ya está concedido, realiza las acciones necesarias aquí
+
             }
         }
     }
