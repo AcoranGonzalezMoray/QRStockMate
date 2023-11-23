@@ -91,7 +91,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                         val zonedDateTime = ZonedDateTime.now()
                         val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                         val addTransaccion = RetrofitInstance.api.addHistory(
-                            Transaction(0,user.name,user.code, "The image of the ${warehouse?.name} warehouse has been modified",
+                            Transaction(0,user.id.toString(),user.code, "The image of the ${warehouse?.name} warehouse has been modified",
                             formattedDate , 2)
                         )
                         if(addTransaccion.isSuccessful){
@@ -184,7 +184,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "The data of the ${warehouse?.name} warehouse has been modified",
+                                Transaction(0,user.id.toString(),user.code, "The data of the ${warehouse?.name} warehouse has been modified",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){

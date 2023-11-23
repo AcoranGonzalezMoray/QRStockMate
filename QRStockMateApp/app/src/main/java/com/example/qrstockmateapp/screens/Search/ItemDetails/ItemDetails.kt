@@ -163,7 +163,7 @@ fun ItemDetailsScreen(navController: NavController) {
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "The info of the ${item?.name} item has been modified",
+                                Transaction(0,user.id.toString(),user.code, "The info of the ${item?.name} item has been modified",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){

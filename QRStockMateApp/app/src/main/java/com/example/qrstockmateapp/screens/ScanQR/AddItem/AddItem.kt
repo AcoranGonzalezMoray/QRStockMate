@@ -124,7 +124,7 @@ fun AddItemScreen(navController: NavController) {
                             val zonedDateTime = ZonedDateTime.now()
                             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                             val addTransaccion = RetrofitInstance.api.addHistory(
-                                Transaction(0,user.name,user.code, "An item,${item.name} , has been added to the warehouse with id ${item.warehouseId}",
+                                Transaction(0,user.id.toString(),user.code, "An item,${item.name} , has been added to the warehouse with id ${item.warehouseId}",
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
