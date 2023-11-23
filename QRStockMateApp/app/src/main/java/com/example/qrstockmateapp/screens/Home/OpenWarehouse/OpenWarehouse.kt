@@ -137,6 +137,7 @@ fun ItemList(items: List<Item>,navController: NavController) {
 
 @Composable
 fun Item(item: Item,navController: NavController) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,6 +213,8 @@ fun Item(item: Item,navController: NavController) {
                     if(DataRepository.getUser()?.role!=3){
                         DataRepository.setItem(item)
                         navController.navigate("itemDetails")
+                    }else{
+                        Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
                     }
                 },colors = ButtonDefaults.buttonColors(Color.Black)) {
                     Text(text = "Open", color = Color.White)
