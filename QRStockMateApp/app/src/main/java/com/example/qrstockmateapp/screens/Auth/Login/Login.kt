@@ -105,7 +105,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 } else {
                     withContext(Dispatchers.Main) {
                         if(response.code() == 400) Toast.makeText(context, "Error the format of the fields are not correct", Toast.LENGTH_SHORT).show()
-                        if(response.code() == 404) Toast.makeText(context, "The username or password is not correct", Toast.LENGTH_SHORT).show()
+                        if(response.code() == 404) Toast.makeText(context, "Incorrect Credentials Or Disabled Account", Toast.LENGTH_SHORT).show()
                     }
 
                     Log.d("errorCode", "Código de error: ${response.code()}")

@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -159,6 +160,46 @@ fun ManageUserScreen(navController: NavController) {
 
 @Composable
 fun UserListItem(user: User, navController: NavController) {
+    //Función Comprobar Inactividad
+    fun checkDisabled(): Boolean {
+        var result = false
+        if (user != null){
+            result = user.email.contains(":")
+        }
+        return result
+    }
+
+    var disabled by remember { mutableStateOf(checkDisabled()) }
+
+    //Función Hacer Inactivo
+    val disableUser:()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            if(user!=null){
+                user.email = "inactivo:" + user.email
+                val updateUser = RetrofitInstance.api.updateUser(user)
+                if (updateUser.isSuccessful) {
+                    Log.d("Updated User", "User was Disabled")
+                    disabled = true
+                } else Log.d("compnayError", "error")
+            }
+        }
+    }
+
+    //Función Hacer Activo
+    val enableUser:()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            if(user!=null){
+                user.email = user.email.split(':')[1]
+                val updateUser = RetrofitInstance.api.updateUser(user)
+                if (updateUser.isSuccessful) {
+                    Log.d("Updated User", "User was Enabled")
+                    disabled = false
+                } else Log.d("compnayError", "error")
+            }
+        }
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -229,6 +270,8 @@ fun UserListItem(user: User, navController: NavController) {
                 Text(text = "Phone: ${user.phone}")
                 Text(text = "Role: ${userRoleToString(user.role)}")
                 Button(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color.Yellow),onClick = {
                         DataRepository.setUserPlus(user)
                         navController.navigate("updateUser")
@@ -238,6 +281,25 @@ fun UserListItem(user: User, navController: NavController) {
                         contentDescription = "",
                         tint = Color.White
                     )
+                }
+                if (disabled) {      //Desactivado
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(Color.Green),onClick = {
+                            enableUser()
+                        }, ) {
+                        Text("Enable", color = Color.White)
+                    }
+                } else {        //Activado
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(Color.Red),onClick = {
+                            disableUser()
+                        }, ) {
+                        Text("Disable", color = Color.White)
+                    }
                 }
             }
         }
