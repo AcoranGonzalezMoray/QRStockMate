@@ -1,10 +1,12 @@
 package com.example.qrstockmateapp.screens.Home.UpdateUser
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -58,7 +61,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UpdateUserScreen(navController: NavController) {
     var user = remember { DataRepository.getUserPlus() }
@@ -71,6 +77,7 @@ fun UpdateUserScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO){
             try {
                 isloading = true
+                val userC = user
                 val userId = user?.id
                 val userIdRequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
 
@@ -79,7 +86,37 @@ fun UpdateUserScreen(navController: NavController) {
                 val imagePart = MultipartBody.Part.createFormData("image", file.name, imageRequestBody)
 
                 val imageResponse =  RetrofitInstance.api.updateImageUser(userIdRequestBody, imagePart)
+                val cm  =DataRepository.getCompany()
+                if(cm!=null){
+                    val employeesResponse = RetrofitInstance.api.getEmployees(cm)
+                    if (employeesResponse.isSuccessful) {
+                        val employeesIO = employeesResponse.body()
+                        val me = employeesIO?.find {it.id == DataRepository.getUser()!!.id }
+                        if(me!=null)DataRepository.setUser(me)
+                    }
+                }
+
+
                 if(imageResponse.isSuccessful){
+                    val user = DataRepository.getUser()
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.id.toString(),user.code, "The image of the ${userC?.name} user has been modified",
+                                formattedDate , 2)
+                        )
+                        if(addTransaccion.isSuccessful){
+                            Log.d("Transaccion", "OK")
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
                     withContext(Dispatchers.Main){
                         navController.navigate("manageUser")
                     }
@@ -151,9 +188,37 @@ fun UpdateUserScreen(navController: NavController) {
                 if(user!=null){
                     Log.d("excepcionWarehouseCambio","${user}")
                     val response =  RetrofitInstance.api.updateUser(user)
-
+                    val userC = user
                     if (response.isSuccessful) {
                         val wResponse = response.body()
+                        val cm  =DataRepository.getCompany()
+                        if(cm!=null){
+                            val employeesResponse = RetrofitInstance.api.getEmployees(cm)
+                            if (employeesResponse.isSuccessful) {
+                                val employeesIO = employeesResponse.body()
+                                val me = employeesIO?.find {it.id == DataRepository.getUser()!!.id  }
+                                if(me!=null)DataRepository.setUser(me)
+                            }
+                        }
+                        val user = DataRepository.getUser()
+                        if(user!=null){
+                            val zonedDateTime = ZonedDateTime.now()
+                            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                            val addTransaccion = RetrofitInstance.api.addHistory(
+                                Transaction(0,user.id.toString(),user.code, "The data of the ${userC?.name} user has been modified",
+                                    formattedDate , 2)
+                            )
+                            if(addTransaccion.isSuccessful){
+                                Log.d("Transaccion", "OK")
+                            }else{
+                                try {
+                                    val errorBody = addTransaccion.errorBody()?.string()
+                                    Log.d("Transaccion", errorBody ?: "Error body is null")
+                                } catch (e: Exception) {
+                                    Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                                }
+                            }
+                        }
                         withContext(Dispatchers.Main){
                             navController.navigate("manageUser")
                         }
@@ -309,7 +374,8 @@ fun UpdateUserScreen(navController: NavController) {
                                 .fillMaxWidth()) {
                             Text(text = "Cancel",color = Color.White)
                         }
-                        Button(modifier = Modifier
+                        Button(colors = ButtonDefaults.buttonColors(Color.Black),
+                            modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
                             onClick = {

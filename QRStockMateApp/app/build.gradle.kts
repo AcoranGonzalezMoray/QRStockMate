@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.qrstockmateapp"
-        minSdk = 24
+        minSdk = 26 //24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -50,6 +50,10 @@ android {
 }
 
 dependencies {
+    implementation ("org.apache.poi:poi:5.2.3")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
+
+
     implementation ("androidx.camera:camera-camera2:1.3.0-alpha04")
     implementation ("androidx.camera:camera-lifecycle:1.3.0-alpha04")
     implementation ("androidx.camera:camera-view:1.3.0-alpha04")

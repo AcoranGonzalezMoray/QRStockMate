@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.screens.Search
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -62,7 +63,10 @@ import com.example.qrstockmateapp.screens.Home.ManageUser.UserListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
+enum class SortOrder {
+    ASCENDING,
+    DESCENDING
+}
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(navController: NavController) {
@@ -71,7 +75,9 @@ fun SearchScreen(navController: NavController) {
     var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
     var searchQuery by remember { mutableStateOf("") };
 
-    val filteredItems = if (searchQuery.isEmpty()) {
+    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
+
+    var filteredItems = if (searchQuery.isEmpty()) {
         listaItems
     } else {
         listaItems.filter { item->
@@ -116,19 +122,42 @@ fun SearchScreen(navController: NavController) {
         backgroundColor = Color.LightGray
     )
 
-    Column() {
+    val sortedItems = sortItems(filteredItems, sortOrder)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { androidx.compose.material.Text("Search") },
+            label = { Text("Search") },
             colors = customTextFieldColors,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 12.dp)
         )
+        Button( colors = ButtonDefaults.buttonColors(Color.Black),
+            onClick = {
+            // Cambiar el orden de la lista al hacer clic en el botón
+            sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+            filteredItems = filteredItems.sortedBy { it.stock }  // Cambia esto a tu criterio de ordenación
+            if (sortOrder == SortOrder.DESCENDING) {
+                filteredItems = filteredItems.reversed()
+            }
+        }) {
+            Text(color= Color.White,text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending")
+        }
+        if(filteredItems.isNotEmpty()){
+            ItemList(items = sortedItems, navController = navController)
 
-
-        ItemList(items = filteredItems, navController = navController)
+        }else{
+            Box {
+                Text(text = "There are no items in this company")
+            }
+        }
     }
 
 }
@@ -142,10 +171,12 @@ fun ItemList(items: List<Item>,navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
     }
+    Spacer(modifier = Modifier.height(60.dp))
 }
 
 @Composable
 fun Item(item: Item,navController: NavController) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -211,22 +242,34 @@ fun Item(item: Item,navController: NavController) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                androidx.compose.material.Text(
+                Text(
                     text = "Name: ${item.name}",
                     fontWeight = FontWeight.Bold
                 )
-                androidx.compose.material.Text(text = "Location: ${item.location}")
-                androidx.compose.material.Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
+                Text(text = "Warehouse: ${DataRepository.getWarehouses()?.find{ it.id == item.warehouseId}?.name}")
+                Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
                 Button(
                     onClick = {
-                        DataRepository.setItem(item)
-                        navController.navigate("itemDetails")
+                       if(DataRepository.getUser()?.role !=3){
+                           DataRepository.setItem(item)
+                           navController.navigate("itemDetails")
+                       }else{
+                           Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
+                       }
                     },
-                    colors = ButtonDefaults.buttonColors(Color.Green)
+                    colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {
-                    Text("Open")
+                    Text("Open", color = Color.White)
                 }
             }
         }
+    }
+}
+
+
+fun sortItems(items: List<Item>, sortOrder: SortOrder): List<Item> {
+    return when (sortOrder) {
+        SortOrder.ASCENDING -> items.sortedBy { it.stock }
+        SortOrder.DESCENDING -> items.sortedByDescending { it.stock }
     }
 }

@@ -2,10 +2,12 @@ package com.example.qrstockmateapp.screens.Home.UpdateWarehouse
 
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -58,7 +61,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UpdateWarehouseScreen(navController: NavController) {
     var warehouse = remember { DataRepository.getWarehousePlus() }
@@ -80,6 +86,25 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
                 val imageResponse =  RetrofitInstance.api.updateImageWarehouse(warehouseIdRequestBody, imagePart)
                 if(imageResponse.isSuccessful){
+                    val user = DataRepository.getUser()
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.id.toString(),user.code, "The image of the ${warehouse?.name} warehouse has been modified",
+                            formattedDate , 2)
+                        )
+                        if(addTransaccion.isSuccessful){
+                            Log.d("Transaccion", "OK")
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
                     withContext(Dispatchers.Main){
                         navController.navigate("home")
                     }
@@ -154,6 +179,25 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
                     if (response.isSuccessful) {
                         val wResponse = response.body()
+                        val user = DataRepository.getUser()
+                        if(user!=null){
+                            val zonedDateTime = ZonedDateTime.now()
+                            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                            val addTransaccion = RetrofitInstance.api.addHistory(
+                                Transaction(0,user.id.toString(),user.code, "The data of the ${warehouse?.name} warehouse has been modified",
+                                    formattedDate , 2)
+                            )
+                            if(addTransaccion.isSuccessful){
+                                Log.d("Transaccion", "OK")
+                            }else{
+                                try {
+                                    val errorBody = addTransaccion.errorBody()?.string()
+                                    Log.d("Transaccion", errorBody ?: "Error body is null")
+                                } catch (e: Exception) {
+                                    Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                                }
+                            }
+                        }
                         withContext(Dispatchers.Main){
                             navController.navigate("home")
                         }
@@ -309,7 +353,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                 .fillMaxWidth()) {
                             Text(text = "Cancel",color = Color.White)
                         }
-                        Button(modifier = Modifier
+                        Button(colors = ButtonDefaults.buttonColors(Color.Black),modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
                             onClick = {

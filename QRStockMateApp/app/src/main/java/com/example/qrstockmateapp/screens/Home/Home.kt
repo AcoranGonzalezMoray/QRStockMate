@@ -1,7 +1,9 @@
 package com.example.qrstockmateapp.screens.Home
 
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -57,6 +59,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Company
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -65,7 +68,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -120,6 +126,7 @@ fun HomeScreen(navController: NavController) {
 
     if(user !=null){
         LaunchedEffect(Unit) {
+            isloading = true
             val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
             if (companyResponse.isSuccessful) {
                 val company = companyResponse.body()
@@ -143,6 +150,8 @@ fun HomeScreen(navController: NavController) {
                     }
                 }
             }
+            delay(1100)
+            isloading = false
         }
     }
 
@@ -177,6 +186,7 @@ fun HomeScreen(navController: NavController) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadWarehouse: ()->Unit) {
     LazyColumn {
@@ -187,6 +197,7 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
     var showDialog by remember { mutableStateOf(false) }
@@ -198,6 +209,25 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                 Log.d("DATA", "${id}, ${warehouse}")
                 val response = RetrofitInstance.api.deleteWarehouse(id,warehouse)
                 if(response.isSuccessful){
+                    val user = DataRepository.getUser()
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.name,user.code, "The ${warehouse?.name} warehouse  has been deleted",
+                                formattedDate , 3)
+                        )
+                        if(addTransaccion.isSuccessful){
+                            Log.d("Transaccion", "OK")
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
                     loadWarehouse()
                 }else{
                     try {
@@ -335,7 +365,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
                 //Administrador
                 Text(
-                    text = "Organization: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
+                    text = "Administrator: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -356,7 +386,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             Icon(
                                 imageVector = Icons.Filled.Create,
                                 contentDescription = "",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     }
@@ -372,7 +402,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             Icon(
                                 imageVector = Icons.Filled.Delete,
                                 contentDescription = "",
-                                tint = Color.White
+                                tint = Color.Black
                             )
                         }
                     }
@@ -385,7 +415,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                               },
                     modifier = Modifier
                         .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Green),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
                 ) {
                     Text(text = "Open", color = Color.White)
                 }

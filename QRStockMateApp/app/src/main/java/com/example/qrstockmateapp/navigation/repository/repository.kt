@@ -82,7 +82,6 @@ object DataRepository {
         return item
     }
 
-
     fun LogOut(){
         user = null
         company = null
